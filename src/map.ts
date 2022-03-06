@@ -13,8 +13,22 @@ export class Map {
 
     generateMap(width: number, height: number): void {
         this.map = {};
-        let digger = new RotJsMap.Digger(width, height);
-        digger.create(this.diggerCallback.bind(this));
+        // let digger = new RotJsMap.Arena(width, height);
+        // digger.create(this.diggerCallback.bind(this));
+
+        const diameter = 10;
+        const smallDiameter = 5;
+        let xShift = 15;
+        let yShift = 10;
+
+        for (let i = 0; i < diameter; i++) {
+            for (let j = -diameter; j < diameter; j++) {
+                let localR = i * i + j * j;
+                if (smallDiameter * smallDiameter < localR && localR < diameter * diameter) {
+                    this.map[this.coordinatesToKey(xShift + i, yShift + j)] = Tile.floor;
+                }
+            }
+        }
     }
 
     setTile(x: number, y: number, tile: Tile): void {
