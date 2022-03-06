@@ -13,6 +13,7 @@ import { InputUtility } from "./input-utility";
 import { Tile, TileType } from "./tile";
 import { Map } from "./map";
 import { TinyPedro } from "./tiny-pedro";
+import {DisplaySizing} from "./display_sizing";
 
 export class Game {
     private display: Display;
@@ -25,6 +26,7 @@ export class Game {
     private enemies: Actor[];
 
     private gameSize: { width: number, height: number };
+    private displaySizing: DisplaySizing
     private mapSize: { width: number, height: number };
     private statusLinePosition: Point;
     private actionLogPosition: Point;
@@ -38,6 +40,11 @@ export class Game {
 
     constructor() {
         this.gameSize = { width: 75, height: 25 };
+        this.displaySizing = new DisplaySizing(
+            new Point(this.gameSize.width / 2, this.gameSize.height / 2),
+            new Point(0, 0),
+            new Point(this.gameSize.width, this.gameSize.height - 5)
+        );
         this.mapSize = { width: this.gameSize.width, height: this.gameSize.height - 4 };
         this.statusLinePosition = new Point(0, this.gameSize.height - 4);
         this.actionLogPosition = new Point(0, this.gameSize.height - 3);
@@ -57,6 +64,16 @@ export class Game {
 
         this.initializeGame();
         this.mainLoop();
+    }
+
+    drawWithCheck(playerPosition: Point, displaySizing: DisplaySizing, position: Point, glyph: Glyph): void {
+
+        const origin = playerPosition.reverse().plus(displaySizing.center)
+        const drawnPosition = position.plus(origin);
+        if (displaySizing.checkFits(drawnPosition)) {
+            this.draw(drawnPosition, glyph);
+        }
+
     }
 
     draw(position: Point, glyph: Glyph): void {
@@ -200,12 +217,12 @@ export class Game {
 
     private drawPanel(): void {
         this.display.clear();
-        this.map.draw();
+        this.map.draw(this.player.position, this.displaySizing);
         this.statusLine.draw();
         this.messageLog.draw();
-        this.draw(this.player.position, this.player.glyph);
+        this.drawWithCheck(this.player.position, this.displaySizing, this.player.position, this.player.glyph);
         for (let enemy of this.enemies) {
-            this.draw(enemy.position, enemy.glyph);
+            this.drawWithCheck(this.player.position, this.displaySizing, enemy.position, enemy.glyph);
         }
     }
 

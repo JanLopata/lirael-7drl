@@ -3,6 +3,7 @@ import { RNG } from "rot-js";
 import { Game } from "./game";
 import { Tile, TileType } from "./tile";
 import { Point } from "./point";
+import {DisplaySizing} from "./display_sizing";
 
 export class Map {
     private map: { [key: string]: Tile };
@@ -60,9 +61,14 @@ export class Map {
         return this.coordinatesToKey(x, y) in this.map;
     }
 
-    draw(): void {
+    draw(playerPosition: Point, displaySizing: DisplaySizing): void {
+        const origin = playerPosition.reverse().plus(displaySizing.center)
         for (let key in this.map) {
-            this.game.draw(this.keyToPoint(key), this.map[key].glyph);
+            let position = this.keyToPoint(key).plus(origin);
+            if (!displaySizing.checkFits(position)) {
+                continue;
+            }
+            this.game.draw(position, this.map[key].glyph);
         }
     }
 

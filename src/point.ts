@@ -8,4 +8,13 @@ export class Point {
     toKey(): string {
         return this.x + "," + this.y;
     }
+
+    plus(another: Point): Point {
+        return new Point(this.x + another.x, this.y + another.y);
+    }
+
+    reverse(): Point {
+        return new Point(-this.x, -this.y);
+    }
+
 }
