@@ -60,24 +60,31 @@ export class SpiralPart {
     public connect(multimap: Multimap) {
 
         const connectionX = this.orientedLeft ? 0 : -1;
-        const levelDirection = this.orientedLeft ? 1 : -1;
+        const levelDirection = this.orientedLeft ? -1 : 1;
 
         const thisLevelMap = multimap.getMap(this.level);
         // top
-        if (multimap.getMap(this.level + levelDirection) != null) {
+        let topTargetMap = multimap.getMap(this.level + levelDirection);
+        if (topTargetMap != null) {
 
             const warpTile = new WarpTile(this.level + levelDirection)
-            for (let j = 1; j < this.width + 1; j++) {
-                thisLevelMap.setTile(connectionX, this.topPoint.y+j, warpTile);
+            for (let j = 1; j < this.width + 2; j++) {
+                let connectionY = this.topPoint.y + j;
+                if (topTargetMap.isPassable(connectionX, connectionY)) {
+                    thisLevelMap.setTile(connectionX, connectionY, warpTile);
+                }
             }
         }
 
         // bottom
-        if (multimap.getMap(this.level - levelDirection) != null) {
-
+        let bottomTargetMap = multimap.getMap(this.level - levelDirection);
+        if (bottomTargetMap != null) {
             const warpTile = new WarpTile(this.level - levelDirection)
-            for (let j = 1; j < this.width + 1; j++) {
-                thisLevelMap.setTile(connectionX, this.bottomPoint.y-j, warpTile);
+            for (let j = 1; j < this.width + 2; j++) {
+                let connectionY = this.bottomPoint.y - j;
+                if (bottomTargetMap.isPassable(connectionX, connectionY)) {
+                    thisLevelMap.setTile(connectionX, connectionY, warpTile);
+                }
             }
         }
 
