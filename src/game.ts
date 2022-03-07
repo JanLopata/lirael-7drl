@@ -1,24 +1,25 @@
-import { Display, Scheduler, KEYS, RNG } from "rot-js/lib/index";
+import {Display, KEYS, RNG, Scheduler} from "rot-js/lib/index";
 import Simple from "rot-js/lib/scheduler/simple";
 
-import { Player } from "./player";
-import { Point } from "./point";
-import { Glyph } from "./glyph";
-import { Actor, ActorType } from "./actor";
-import { Pedro } from "./pedro";
-import { GameState } from "./game-state";
-import { StatusLine } from "./status-line";
-import { MessageLog } from "./message-log";
-import { InputUtility } from "./input-utility";
-import { Tile, TileType } from "./tile";
-import { Map } from "./map";
-import { TinyPedro } from "./tiny-pedro";
+import {Player} from "./player";
+import {Point} from "./point";
+import {Glyph} from "./glyph";
+import {Actor, ActorType} from "./actor";
+import {Pedro} from "./pedro";
+import {GameState} from "./game-state";
+import {StatusLine} from "./status-line";
+import {MessageLog} from "./message-log";
+import {InputUtility} from "./input-utility";
+import {Tile, TileType} from "./tile";
+import {TinyPedro} from "./tiny-pedro";
 import {DisplaySizing} from "./display_sizing";
+import {Multimap} from "./multimap";
+import {Point3D} from "./point3d";
 
 export class Game {
     private display: Display;
     private scheduler: Simple;
-    private map: Map;
+    private multimap: Multimap;
     private statusLine: StatusLine;
     private messageLog: MessageLog;
 
@@ -32,7 +33,7 @@ export class Game {
     private actionLogPosition: Point;
     private gameState: GameState;
 
-    private pineapplePoint: Point;
+    private pineapplePoint: Point3D;
     private pedroColor: string;
     private foregroundColor = "white";
     private backgroundColor = "black";
@@ -57,10 +58,10 @@ export class Game {
         document.body.appendChild(this.display.getContainer());
 
         this.gameState = new GameState();
-        this.map = new Map(this);
+        this.multimap = new Multimap(this);
         this.statusLine = new StatusLine(this, this.statusLinePosition, this.gameSize.width, { maxBoxes: this.maximumBoxes });
         this.messageLog = new MessageLog(this, this.actionLogPosition, this.gameSize.width, 3);
-        this.pedroColor = new Pedro(this, new Point(0, 0)).glyph.foregroundColor;
+        this.pedroColor = new Pedro(this, new Point3D(0, 0, 0)).glyph.foregroundColor;
 
         this.initializeGame();
         this.mainLoop();
@@ -86,8 +87,17 @@ export class Game {
         this.display.drawText(position.x, position.y, text, maxWidth);
     }
 
-    mapIsPassable(x: number, y: number): boolean {
-        return this.map.isPassable(x, y);
+    mapIsPassable(level: number, x: number, y: number): boolean {
+        return this.multimap.isPassable(level, x, y);
+    }
+
+    onLevelPassable(level: number): (x: number, y: number) => boolean {
+        let map = this.multimap.getMap(level);
+        if (map == null) {
+            console.warn("no map found for level " + level)
+            return (a, b) => false;
+        }
+        return (x, y) => map.isPassable(x, y);
     }
 
     occupiedByEnemy(x: number, y: number): boolean {
@@ -99,14 +109,14 @@ export class Game {
         return false;
     }
 
-    getPlayerPosition(): Point {
+    getPlayerPosition(): Point3D {
         return this.player.position;
     }
 
-    checkBox(x: number, y: number): void {
-        switch (this.map.getTileType(x, y)) {
+    checkBox(level:number, x: number, y: number): void {
+        switch (this.multimap.getTileType(level, x, y)) {
             case Tile.box.type:
-                this.map.setTile(x, y, Tile.searchedBox);
+                this.multimap.setTile(level, x, y, Tile.searchedBox);
                 this.statusLine.boxes += 1;
                 if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
                     this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
@@ -117,7 +127,7 @@ export class Game {
                 }
                 break;
             case Tile.searchedBox.type:
-                this.map.setTile(x, y, Tile.destroyedBox);
+                this.multimap.setTile(level, x, y, Tile.destroyedBox);
                 this.messageLog.appendText("You destroy this box!");
                 break;
             case Tile.destroyedBox.type:
@@ -129,17 +139,17 @@ export class Game {
         }
     }
 
-    destroyBox(actor: Actor, x: number, y: number): void {
-        switch (this.map.getTileType(x, y)) {
+    destroyBox(actor: Actor, level: number, x: number, y: number): void {
+        switch (this.multimap.getTileType(level, x, y)) {
             case TileType.Box:
             case TileType.SearchedBox:
-                this.map.setTile(x, y, Tile.destroyedBox);
+                this.multimap.setTile(level, x, y, Tile.destroyedBox);
                 if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
                     this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-                    this.messageLog.appendText(`Game over - ${this.getActorName(actor)} detroyed the box with the pineapple.`);
+                    this.messageLog.appendText(`Game over - ${this.getActorName(actor)} destroyed the box with the pineapple.`);
                     this.gameState.pineappleWasDestroyed = true;
                 } else {
-                    this.messageLog.appendText(`${this.getActorName(actor)} detroyed a box.`);
+                    this.messageLog.appendText(`${this.getActorName(actor)} destroyed a box.`);
                 }
                 break;
             case TileType.DestroyedBox:
@@ -157,12 +167,8 @@ export class Game {
         this.gameState.playerWasCaught = true;
     }
 
-    getTileType(x: number, y: number): TileType {
-        return this.map.getTileType(x, y);
-    }
-
-    getRandomTilePositions(type: TileType, quantity: number = 1): Point[] {
-        return this.map.getRandomTilePositions(type, quantity);
+    getRandomTilePositions(type: TileType, quantity: number = 1): Point3D[] {
+        return this.multimap.getRandomTilePositions(type, quantity);
     }
 
     private initializeGame(): void {
@@ -177,7 +183,7 @@ export class Game {
         }
         this.gameState.reset();
 
-        this.map.generateMap(this.mapSize.width, this.mapSize.height);
+        this.multimap.generateMultimap(this.mapSize.width, this.mapSize.height);
         this.generateBoxes();
 
         this.createBeings();
@@ -218,12 +224,14 @@ export class Game {
 
     private drawPanel(): void {
         this.display.clear();
-        this.map.draw(this.player.position, this.displaySizing);
+        console.log(this.player)
+        console.log(this.player.position)
+        this.multimap.getMap(this.player.position.level).draw(this.player.position.toPoint(), this.displaySizing);
         this.statusLine.draw();
         this.messageLog.draw();
-        this.drawWithCheck(this.player.position, this.displaySizing, this.player.position, this.player.glyph);
+        this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, this.player.position.toPoint(), this.player.glyph);
         for (let enemy of this.enemies) {
-            this.drawWithCheck(this.player.position, this.displaySizing, enemy.position, enemy.glyph);
+            this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, enemy.position.toPoint(), enemy.glyph);
         }
     }
 
@@ -258,9 +266,9 @@ export class Game {
     }
 
     private generateBoxes(): void {
-        let positions = this.map.getRandomTilePositions(TileType.Floor, this.maximumBoxes);
+        let positions = this.multimap.getRandomTilePositions(TileType.Floor, this.maximumBoxes);
         for (let position of positions) {
-            this.map.setTile(position.x, position.y, Tile.box);
+            this.multimap.setTile(position.level, position.x, position.y, Tile.box);
         }
         this.pineapplePoint = positions[0];
     }
@@ -268,7 +276,7 @@ export class Game {
     private createBeings(): void {
         let numberOfEnemies = 1 + Math.floor(this.statusLine.pineapples / 3.0);
         this.enemies = [];
-        let positions = this.map.getRandomTilePositions(TileType.Floor, 1 + numberOfEnemies);
+        let positions = this.multimap.getRandomTilePositions(TileType.Floor, 1 + numberOfEnemies);
         this.player = new Player(this, positions.splice(0, 1)[0]);
         for (let position of positions) {
             if (this.statusLine.pineapples < 1 || RNG.getUniform() < 0.5) {
@@ -277,10 +285,21 @@ export class Game {
                 this.enemies.push(new TinyPedro(this, position));
             }
         }
+        // console.log(this.enemies)
+        console.log(positions)
+        console.log(this.player.position)
     }
 
     private resetStatusLine(): void {
         this.statusLine.reset();
         this.statusLine.maxBoxes = this.maximumBoxes;
     }
+
+    sameLevelPointOrNull(level: number, point: Point3D): Point {
+        if (point.level != level) {
+            return null;
+        }
+        return point.toPoint();
+    }
+
 }

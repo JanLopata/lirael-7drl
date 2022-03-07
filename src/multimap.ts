@@ -18,7 +18,7 @@ export class Multimap {
         return this.multimap[level];
     }
 
-    generateMap(width: number, height: number): void {
+    generateMultimap(width: number, height: number): void {
         this.multimap = {};
         this.multimap[0] = new Map(this.game);
         this.multimap[1] = new Map(this.game);
@@ -37,15 +37,19 @@ export class Multimap {
     getRandomTilePositions(type: TileType, quantity: number = 1): Point3D[] {
         let buffer: Point3D[] = [];
         let result: Point3D[] = [];
+        console.log(this)
         for (let levelKey in this.multimap) {
-            let multimapElement = this.multimap[levelKey];
-            for (let key in multimapElement) {
-                if (multimapElement[key].type === type) {
+            let level = parseInt(levelKey);
+            console.log("searching for tiles in level " + level)
+            let levelMap = this.getMap(level).map
+            for (let key in levelMap) {
+                if (levelMap[key].type === type) {
                     let point = this.keyToPoint(key);
-                    buffer.push(new Point3D(parseInt(levelKey), point.x, point.y));
+                    buffer.push(new Point3D(level, point.x, point.y));
                 }
             }
         }
+        console.log("buffer size: " + buffer.length)
 
         let index: number;
         while (buffer.length > 0 && result.length < quantity) {
@@ -60,7 +64,12 @@ export class Multimap {
     }
 
     isPassable(level: number, x: number, y: number): boolean {
-        return this.getMap(level).isPassable(x, y);
+        let map = this.getMap(level);
+        if (map == null) {
+            console.warn("map is empty for level " + level)
+            return false;
+        }
+        return map.isPassable(x, y);
     }
 
     draw(playerPosition: Point3D, displaySizing: DisplaySizing): void {

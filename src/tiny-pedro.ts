@@ -4,6 +4,7 @@ import { Actor, ActorType } from "./actor";
 import { Point } from "./point";
 import { Glyph } from "./glyph";
 import { Tile } from "./tile";
+import {Point3D} from "./point3d";
 
 export class TinyPedro implements Actor {
     glyph: Glyph;
@@ -11,7 +12,7 @@ export class TinyPedro implements Actor {
     private target: Point;
     private path: Point[];
 
-    constructor(private game: Game, public position: Point) {
+    constructor(private game: Game, public position: Point3D) {
         this.glyph = new Glyph("p", "#00f", "");
         this.type = ActorType.TinyPedro;
     }
@@ -22,10 +23,10 @@ export class TinyPedro implements Actor {
             this.game.catchPlayer(this);
         }
 
-        if (!this.target || this.game.getTileType(this.target.x, this.target.y) != Tile.box.type) {
-            this.target = this.game.getRandomTilePositions(Tile.box.type)[0];
+        if (!this.target) {
+            this.target = this.game.sameLevelPointOrNull(this.position.level, this.game.getRandomTilePositions(Tile.box.type)[0]);
         }
-        let astar = new Path.AStar(this.target.x, this.target.y, this.game.mapIsPassable.bind(this.game), { topology: 8 });
+        let astar = new Path.AStar(this.target.x, this.target.y, this.game.onLevelPassable(this.position.level).bind(this.game), { topology: 8 });
 
         this.path = [];
         astar.compute(this.position.x, this.position.y, this.pathCallback.bind(this));
@@ -33,14 +34,14 @@ export class TinyPedro implements Actor {
 
         if (this.path.length > 0) {
             if (!this.game.occupiedByEnemy(this.path[0].x, this.path[0].y)) {
-                this.position = new Point(this.path[0].x, this.path[0].y);
+                this.position = new Point3D(this.position.level, this.path[0].x, this.path[0].y);
             }
         }
 
         if (this.position.equals(playerPosition)) {
             this.game.catchPlayer(this);
-        } else if (this.position.equals(this.target)) {
-            this.game.destroyBox(this, this.target.x, this.target.y);
+        } else if (this.position.toPoint().equals(this.target)) {
+            this.game.destroyBox(this, this.position.level, this.position.x, this.position.y);
             this.target = undefined;
         }
 

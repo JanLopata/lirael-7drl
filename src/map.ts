@@ -1,28 +1,14 @@
-import { Map as RotJsMap } from "rot-js/lib/index";
-import { RNG } from "rot-js";
-import { Game } from "./game";
-import { Tile, TileType } from "./tile";
-import { Point } from "./point";
+import {RNG} from "rot-js";
+import {Game} from "./game";
+import {Tile, TileType} from "./tile";
+import {Point} from "./point";
 import {DisplaySizing} from "./display_sizing";
-import {SpiralPart} from "./spiral_part";
 
 export class Map {
-    private map: { [key: string]: Tile };
+    map: { [key: string]: Tile };
 
     constructor(private game: Game) {
         this.map = {};
-    }
-
-    generateMap(width: number, height: number): void {
-        this.map = {};
-        // let digger = new RotJsMap.Arena(width, height);
-        // digger.create(this.diggerCallback.bind(this));
-
-        const leftSpiralPart = new SpiralPart(0, new Point(0, 10), new Point(0, 30), 7, true);
-        const rightSpiralPart = new SpiralPart(0, new Point(0, 10), new Point(0, 30), 7, false);
-
-        leftSpiralPart.imprintToMap(this)
-        rightSpiralPart.imprintToMap(this)
     }
 
     setTile(x: number, y: number, tile: Tile): void {

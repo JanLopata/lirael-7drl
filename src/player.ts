@@ -4,13 +4,14 @@ import { Actor, ActorType } from "./actor";
 import { Point } from "./point";
 import { Glyph } from "./glyph";
 import { InputUtility } from "./input-utility";
+import {Point3D} from "./point3d";
 
 export class Player implements Actor {
     glyph: Glyph;
     type: ActorType;
     private keyMap: { [key: number]: number }
 
-    constructor(private game: Game, public position: Point) {
+    constructor(private game: Game, public position: Point3D) {
         this.glyph = new Glyph("@", "#ff0");
         this.type = ActorType.Player;
 
@@ -35,13 +36,13 @@ export class Player implements Actor {
         if (code in this.keyMap) {
             let diff = DIRS[8][this.keyMap[code]];
             let newPoint = new Point(this.position.x + diff[0], this.position.y + diff[1]);
-            if (!this.game.mapIsPassable(newPoint.x, newPoint.y)) {
+            if (!this.game.mapIsPassable(this.position.level, newPoint.x, newPoint.y)) {
                 return;
             }
-            this.position = newPoint;
+            this.position = new Point3D(this.position.level, newPoint.x, newPoint.y);
             validInput = true;
         } else if (code === KEYS.VK_RETURN || code === KEYS.VK_SPACE) {
-            this.game.checkBox(this.position.x, this.position.y);
+            this.game.checkBox(this.position.level, this.position.x, this.position.y);
             validInput = true;
         } else {
             validInput = code === KEYS.VK_NUMPAD5; // Wait a turn
