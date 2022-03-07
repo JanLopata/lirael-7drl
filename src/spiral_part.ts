@@ -48,8 +48,7 @@ export class SpiralPart {
             const warpTile = new WarpTile(this.level + levelDirection)
             for (let j = -this.outsideDiameter - 2; j <= 1; j++) {
                 if (topTargetMap.isPassable(connectionX, j)) {
-                    if (!thisLevelMap.isPassable(connectionX, j))
-                        thisLevelMap.setTile(connectionX, j, warpTile);
+                    thisLevelMap.setTile(connectionX, j, warpTile);
                 }
             }
         }
@@ -60,8 +59,7 @@ export class SpiralPart {
             const warpTile = new WarpTile(this.level - levelDirection)
             for (let j = 1; j <= this.outsideDiameter + 2; j++) {
                 if (bottomTargetMap.isPassable(connectionX, j)) {
-                    if (!thisLevelMap.isPassable(connectionX, j))
-                        thisLevelMap.setTile(connectionX, j, warpTile);
+                    thisLevelMap.setTile(connectionX, j, warpTile);
                 }
             }
         }

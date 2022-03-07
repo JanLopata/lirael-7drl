@@ -226,18 +226,18 @@ export class Game {
         this.display.clear();
         console.log(this.player)
         console.log(this.player.position)
-        this.multimap.getMap(this.player.position.level).draw(this.player.position.toPoint(), this.displaySizing);
 
         // buggy view of neighbour levels
-        // const above = this.multimap.getMap(this.player.position.level + 1)
-        // if (above != null && this.player.position.x * this.player.position.y > 0) {
-        //     above.draw(this.player.position.toPoint(), this.displaySizing)
-        // }
-        // const under = this.multimap.getMap(this.player.position.level - 1)
-        // if (under != null && this.player.position.x * this.player.position.y  < 0) {
-        //     under.draw(this.player.position.toPoint(), this.displaySizing)
-        // }
+        const above = this.multimap.getMap(this.player.position.level + 1)
+        if (above != null && this.player.position.x * this.player.position.y < 0) {
+            above.draw(this.player.position.toPoint(), this.displaySizing)
+        }
+        const under = this.multimap.getMap(this.player.position.level - 1)
+        if (under != null && this.player.position.x * this.player.position.y > 0) {
+            under.draw(this.player.position.toPoint(), this.displaySizing)
+        }
 
+        this.multimap.getMap(this.player.position.level).draw(this.player.position.toPoint(), this.displaySizing);
         this.statusLine.draw();
         this.messageLog.draw();
         this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, this.player.position.toPoint(), this.player.glyph);
