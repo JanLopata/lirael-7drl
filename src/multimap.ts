@@ -24,9 +24,9 @@ export class Multimap {
         this.multimap[1] = new Map(this.game);
         this.multimap[2] = new Map(this.game);
 
-        const leftSpiralPart = new SpiralPart(0, new Point(0, 10), new Point(0, 30), 7, true);
-        const rightSpiralPart = new SpiralPart(1, new Point(0, 10), new Point(0, 30), 7, false);
-        const anotherLeftSpiralPart = new SpiralPart(2, new Point(0, 10), new Point(0, 30), 7, true);
+        const leftSpiralPart = new SpiralPart(0, 3, 7,true);
+        const rightSpiralPart = new SpiralPart(1, 3, 7, false);
+        const anotherLeftSpiralPart = new SpiralPart(2, 3, 7, true);
 
         leftSpiralPart.imprintToMap(this.getMap(0))
         rightSpiralPart.imprintToMap(this.getMap(1))
