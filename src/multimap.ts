@@ -22,12 +22,19 @@ export class Multimap {
         this.multimap = {};
         this.multimap[0] = new Map(this.game);
         this.multimap[1] = new Map(this.game);
+        this.multimap[2] = new Map(this.game);
 
         const leftSpiralPart = new SpiralPart(0, new Point(0, 10), new Point(0, 30), 7, true);
         const rightSpiralPart = new SpiralPart(1, new Point(0, 10), new Point(0, 30), 7, false);
+        const anotherLeftSpiralPart = new SpiralPart(2, new Point(0, 10), new Point(0, 30), 7, true);
 
         leftSpiralPart.imprintToMap(this.getMap(0))
         rightSpiralPart.imprintToMap(this.getMap(1))
+        anotherLeftSpiralPart.imprintToMap(this.getMap(2));
+
+        leftSpiralPart.connect(this)
+        rightSpiralPart.connect(this)
+        anotherLeftSpiralPart.connect(this)
     }
 
     setTile(level: number, x: number, y: number, tile: Tile): void {

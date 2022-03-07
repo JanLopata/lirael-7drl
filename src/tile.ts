@@ -4,7 +4,8 @@ export const enum TileType {
     Floor,
     Box,
     SearchedBox,
-    DestroyedBox
+    DestroyedBox,
+    WarpPoint,
 }
 
 export class Tile {
@@ -12,6 +13,8 @@ export class Tile {
     static readonly box = new Tile(TileType.Box, new Glyph("#", "#654321"));
     static readonly searchedBox = new Tile(TileType.SearchedBox, new Glyph("#", "#666"));
     static readonly destroyedBox = new Tile(TileType.DestroyedBox, new Glyph("x", "#555"));
+    static readonly warpPoint = new Tile(TileType.WarpPoint, new Glyph("*", "#ff7700"));
+
 
     constructor(public readonly type: TileType, public readonly glyph: Glyph) { }
 }

@@ -1,6 +1,8 @@
 import {Map} from "./map"
 import {Point} from "./point";
 import {Tile} from "./tile";
+import {Multimap} from "./multimap";
+import {WarpTile} from "./warptile";
 
 export class SpiralPart {
 
@@ -51,6 +53,31 @@ export class SpiralPart {
                     console.log("updated tile in " + x + "," + y)
                     map.setTile(x, y, Tile.floor);
                 }
+            }
+        }
+    }
+
+    public connect(multimap: Multimap) {
+
+        const connectionX = this.orientedLeft ? 0 : -1;
+        const levelDirection = this.orientedLeft ? 1 : -1;
+
+        const thisLevelMap = multimap.getMap(this.level);
+        // top
+        if (multimap.getMap(this.level + levelDirection) != null) {
+
+            const warpTile = new WarpTile(this.level + levelDirection)
+            for (let j = 1; j < this.width + 1; j++) {
+                thisLevelMap.setTile(connectionX, this.topPoint.y+j, warpTile);
+            }
+        }
+
+        // bottom
+        if (multimap.getMap(this.level - levelDirection) != null) {
+
+            const warpTile = new WarpTile(this.level - levelDirection)
+            for (let j = 1; j < this.width + 1; j++) {
+                thisLevelMap.setTile(connectionX, this.bottomPoint.y-j, warpTile);
             }
         }
 
