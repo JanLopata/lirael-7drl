@@ -24,8 +24,9 @@ export class TinyPedro implements Actor {
         }
 
         if (!this.target) {
-            this.target = this.game.sameLevelPointOrNull(this.position.level, this.game.getRandomTilePositions(Tile.box.type)[0]);
+            this.target = this.game.warper.findTargetThroughWarps(this, this.game.getRandomTilePositions(Tile.box.type)[0]).toPoint();
         }
+        console.log("Tiny pedro is on " + this.position.toKey() + " targeting " + (this.target ? this.target.toKey() : "nothing"));
         let astar = new Path.AStar(this.target.x, this.target.y, this.game.onLevelPassable(this.position.level).bind(this.game), { topology: 8 });
 
         this.path = [];
@@ -35,6 +36,7 @@ export class TinyPedro implements Actor {
         if (this.path.length > 0) {
             if (!this.game.occupiedByEnemy(this.path[0].x, this.path[0].y)) {
                 this.position = new Point3D(this.position.level, this.path[0].x, this.path[0].y);
+                this.game.warper.tryActorLevelWarp(this);
             }
         }
 
