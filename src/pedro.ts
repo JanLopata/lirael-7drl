@@ -4,7 +4,6 @@ import {Actor, ActorType} from "./actor";
 import {Point} from "./point";
 import {Glyph} from "./glyph";
 import {Point3D} from "./point3d";
-import {Tile} from "./tile";
 
 export class Pedro implements Actor {
     glyph: Glyph;
@@ -18,15 +17,9 @@ export class Pedro implements Actor {
 
     act(): Promise<any> {
         let playerPosition = this.game.getPlayerPosition();
-        let target: Point;
-        if (playerPosition.level == this.position.level) {
-            target = playerPosition.toPoint();
-        } else {
-            // wander hopelessly
-            while (target == null) {
-                // while = hack
-                target = this.game.sameLevelPointOrNull(this.position.level, this.game.getRandomTilePositions(Tile.floor.type)[0]);
-            }
+        let target = this.game.warper.findTargetThroughWarps(this, playerPosition);
+        if (target == null) {
+            return Promise.resolve();
         }
 
         let astar = new Path.AStar(target.x, target.y, this.game.onLevelPassable(this.position.level), {topology: 4});
@@ -44,6 +37,8 @@ export class Pedro implements Actor {
         if (this.position.equals(playerPosition)) {
             this.game.catchPlayer(this);
         }
+
+        this.game.warper.tryActorLevelWarp(this);
 
         return Promise.resolve();
     }

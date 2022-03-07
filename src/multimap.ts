@@ -6,6 +6,7 @@ import {Point} from "./point";
 import {DisplaySizing} from "./display_sizing";
 import {SpiralPart} from "./spiral_part";
 import {Point3D} from "./point3d";
+import {WarpTile} from "./warptile";
 
 export class Multimap {
     private multimap: { [level: number]: Map }
@@ -44,10 +45,8 @@ export class Multimap {
     getRandomTilePositions(type: TileType, quantity: number = 1): Point3D[] {
         let buffer: Point3D[] = [];
         let result: Point3D[] = [];
-        console.log(this)
         for (let levelKey in this.multimap) {
             let level = parseInt(levelKey);
-            console.log("searching for tiles in level " + level)
             let levelMap = this.getMap(level).map
             for (let key in levelMap) {
                 if (levelMap[key].type === type) {
@@ -56,14 +55,29 @@ export class Multimap {
                 }
             }
         }
-        console.log("buffer size: " + buffer.length)
-
         let index: number;
         while (buffer.length > 0 && result.length < quantity) {
             index = Math.floor(RNG.getUniform() * buffer.length);
             result.push(buffer.splice(index, 1)[0]);
         }
         return result;
+    }
+
+    getRandomWarpFromTo(fromLevel: number, toLevel: number): Point3D {
+        let buffer: Point3D[] = [];
+        let levelMap = this.getMap(fromLevel).map
+        for (let key in levelMap) {
+            let levelMapElement = levelMap[key];
+            if (levelMapElement instanceof WarpTile) {
+                if (levelMapElement.targetLevel == toLevel) {
+                    let point = this.keyToPoint(key);
+                    buffer.push(new Point3D(fromLevel, point.x, point.y));
+                }
+            }
+        }
+        const index = Math.floor(RNG.getUniform() * buffer.length);
+        return buffer[index];
+
     }
 
     getTileType(level: number, x: number, y: number): TileType {
