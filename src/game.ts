@@ -15,6 +15,7 @@ import {TinyPedro} from "./tiny-pedro";
 import {DisplaySizing} from "./display_sizing";
 import {Multimap} from "./multimap";
 import {Point3D} from "./point3d";
+import {Warper} from "./warper";
 
 export class Game {
     private display: Display;
@@ -38,6 +39,7 @@ export class Game {
     private foregroundColor = "white";
     private backgroundColor = "black";
     private maximumBoxes = 10;
+    warper: Warper;
 
     constructor() {
         this.gameSize = { width: 75, height: 25 };
@@ -62,6 +64,7 @@ export class Game {
         this.statusLine = new StatusLine(this, this.statusLinePosition, this.gameSize.width, { maxBoxes: this.maximumBoxes });
         this.messageLog = new MessageLog(this, this.actionLogPosition, this.gameSize.width, 3);
         this.pedroColor = new Pedro(this, new Point3D(0, 0, 0)).glyph.foregroundColor;
+        this.warper = new Warper(this.multimap);
 
         this.initializeGame();
         this.mainLoop();

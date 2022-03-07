@@ -40,6 +40,8 @@ export class Player implements Actor {
                 return;
             }
             this.position = new Point3D(this.position.level, newPoint.x, newPoint.y);
+            this.game.warper.tryActorLevelWarp(this);
+
             validInput = true;
         } else if (code === KEYS.VK_RETURN || code === KEYS.VK_SPACE) {
             this.game.checkBox(this.position.level, this.position.x, this.position.y);

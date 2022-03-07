@@ -1,0 +1,25 @@
+import {Actor} from "./actor";
+import {Multimap} from "./multimap";
+import {WarpTile} from "./warptile";
+import {Point3D} from "./point3d";
+
+export class Warper {
+
+    constructor(private multimap: Multimap) {
+
+    }
+
+
+    tryActorLevelWarp(actor: Actor): boolean {
+
+        let tile = this.multimap.getTile(actor.position.level, actor.position.x, actor.position.y);
+        if (tile == null || !(tile instanceof WarpTile)) {
+           return false;
+        }
+
+        actor.position = new Point3D(tile.targetLevel, actor.position.x, actor.position.y)
+        console.log("Player warped to level " + actor.position.level);
+    }
+
+
+}

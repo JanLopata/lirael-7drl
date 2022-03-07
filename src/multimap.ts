@@ -70,6 +70,10 @@ export class Multimap {
         return this.getMap(level).getTileType(x, y);
     }
 
+    getTile(level: number, x: number, y: number): Tile {
+        return this.getMap(level).getTile(x, y);
+    }
+
     isPassable(level: number, x: number, y: number): boolean {
         let map = this.getMap(level);
         if (map == null) {

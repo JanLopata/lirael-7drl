@@ -36,6 +36,10 @@ export class Map {
         return this.map[this.coordinatesToKey(x, y)].type;
     }
 
+    getTile(x: number, y: number): Tile {
+        return this.map[this.coordinatesToKey(x, y)];
+    }
+
     isPassable(x: number, y: number): boolean {
         return this.coordinatesToKey(x, y) in this.map;
     }
