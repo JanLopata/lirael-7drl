@@ -197,6 +197,7 @@ export class Game {
             if (!actor) {
                 break;
             }
+            console.log("loop tick")
 
             await actor.act();
             if (actor.type === ActorType.Player) {

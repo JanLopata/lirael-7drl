@@ -4,6 +4,7 @@ import { Game } from "./game";
 import { Tile, TileType } from "./tile";
 import { Point } from "./point";
 import {DisplaySizing} from "./display_sizing";
+import {SpiralPart} from "./spiral_part";
 
 export class Map {
     private map: { [key: string]: Tile };
@@ -17,19 +18,11 @@ export class Map {
         // let digger = new RotJsMap.Arena(width, height);
         // digger.create(this.diggerCallback.bind(this));
 
-        const diameter = 10;
-        const smallDiameter = 5;
-        let xShift = 15;
-        let yShift = 10;
+        const leftSpiralPart = new SpiralPart(0, new Point(0, 10), new Point(0, 30), 7, true);
+        const rightSpiralPart = new SpiralPart(0, new Point(0, 10), new Point(0, 30), 7, false);
 
-        for (let i = 0; i < diameter; i++) {
-            for (let j = -diameter; j < diameter; j++) {
-                let localR = i * i + j * j;
-                if (smallDiameter * smallDiameter < localR && localR < diameter * diameter) {
-                    this.map[this.coordinatesToKey(xShift + i, yShift + j)] = Tile.floor;
-                }
-            }
-        }
+        leftSpiralPart.imprintToMap(this)
+        rightSpiralPart.imprintToMap(this)
     }
 
     setTile(x: number, y: number, tile: Tile): void {
