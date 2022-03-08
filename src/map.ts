@@ -53,6 +53,18 @@ export class Map {
         return true;
     }
 
+    isNavigable(x: number, y: number, unlockStrength: number): boolean {
+        let tile = this.getTile(x, y);
+        if (tile == null)
+            return false;
+
+        if (tile instanceof Door) {
+            return tile.locked <= unlockStrength;
+        }
+
+        return true;
+    }
+
     draw(playerPosition: Point, displaySizing: DisplaySizing): void {
         const origin = playerPosition.reverse().plus(displaySizing.center)
         for (let key in this.map) {

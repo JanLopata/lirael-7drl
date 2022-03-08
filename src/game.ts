@@ -104,6 +104,11 @@ export class Game {
         return (x, y) => map.isPassable(x, y);
     }
 
+    onLevelNavigable(level: number, unlockStrength: number): (x: number, y: number) => boolean {
+        let map = this.multimap.getMap(level);
+        return (x, y) => map.isNavigable(x, y, unlockStrength);
+    }
+
     occupiedByEnemy(x: number, y: number): boolean {
         for (let enemy of this.enemies) {
             if (enemy.position.x == x && enemy.position.y == y) {
