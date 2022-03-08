@@ -7,9 +7,11 @@ import {DisplaySizing} from "./display_sizing";
 import {SpiralPart} from "./spiral_part";
 import {Point3D} from "./point3d";
 import {WarpTile} from "./warptile";
+import {RoomsAround} from "./rooms_around";
 
 export class Multimap {
     private multimap: { [level: number]: Map }
+    private spirals: SpiralPart[];
 
     constructor(private game: Game) {
         this.multimap = {};
@@ -21,21 +23,27 @@ export class Multimap {
 
     generateMultimap(width: number, height: number): void {
         this.multimap = {};
-        this.multimap[0] = new Map(this.game);
-        this.multimap[1] = new Map(this.game);
-        this.multimap[2] = new Map(this.game);
+        this.spirals = [];
+        for (let i = 0; i < 7; i++) {
+            this.generateLevel(i);
+        }
+        this.connectSpirals();
+    }
 
-        const leftSpiralPart = new SpiralPart(0, 3, 7,true);
-        const rightSpiralPart = new SpiralPart(1, 3, 7, false);
-        const anotherLeftSpiralPart = new SpiralPart(2, 3, 7, true);
+    generateLevel(level: number) {
+        this.multimap[level] = new Map(this.game);
+        const left = level % 2 == 0;
+        const spiralPart = new SpiralPart(level, 4, 9, left)
+        spiralPart.imprintToMap(this.getMap(level));
+        this.spirals.push(spiralPart);
+        const roomsAround = new RoomsAround(level, spiralPart, 15);
+        roomsAround.imprintToMap(this.getMap(level));
+    }
 
-        leftSpiralPart.imprintToMap(this.getMap(0))
-        rightSpiralPart.imprintToMap(this.getMap(1))
-        anotherLeftSpiralPart.imprintToMap(this.getMap(2));
-
-        leftSpiralPart.connect(this)
-        rightSpiralPart.connect(this)
-        anotherLeftSpiralPart.connect(this)
+    connectSpirals() {
+        for (let spiral of this.spirals) {
+            spiral.connect(this);
+        }
     }
 
     setTile(level: number, x: number, y: number, tile: Tile): void {

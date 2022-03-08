@@ -6,9 +6,9 @@ import {WarpTile} from "./warptile";
 export class SpiralPart {
 
     private readonly level: number;
-    private readonly orientedLeft: boolean;
+    readonly orientedLeft: boolean;
     private readonly insideDiameter: number;
-    private readonly outsideDiameter: number;
+    readonly outsideDiameter: number;
 
     constructor(level: number, insideDiameter: number, outsideDiameter: number, left: boolean) {
         this.level = level;
@@ -44,7 +44,6 @@ export class SpiralPart {
         // top
         let topTargetMap = multimap.getMap(this.level + levelDirection);
         if (topTargetMap != null) {
-
             const warpTile = new WarpTile(this.level + levelDirection)
             for (let j = -this.outsideDiameter - 2; j <= 1; j++) {
                 if (topTargetMap.isPassable(connectionX, j)) {
