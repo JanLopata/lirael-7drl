@@ -6,9 +6,9 @@ import {WarpTile} from "./warptile";
 export class SpiralPart {
 
     private readonly level: number;
-    private readonly orientedLeft: boolean;
+    readonly orientedLeft: boolean;
     private readonly insideDiameter: number;
-    private readonly outsideDiameter: number;
+    readonly outsideDiameter: number;
 
     constructor(level: number, insideDiameter: number, outsideDiameter: number, left: boolean) {
         this.level = level;

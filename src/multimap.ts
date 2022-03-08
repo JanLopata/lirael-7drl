@@ -7,6 +7,7 @@ import {DisplaySizing} from "./display_sizing";
 import {SpiralPart} from "./spiral_part";
 import {Point3D} from "./point3d";
 import {WarpTile} from "./warptile";
+import {RoomsAround} from "./rooms_around";
 
 export class Multimap {
     private multimap: { [level: number]: Map }
@@ -32,6 +33,9 @@ export class Multimap {
         leftSpiralPart.imprintToMap(this.getMap(0))
         rightSpiralPart.imprintToMap(this.getMap(1))
         anotherLeftSpiralPart.imprintToMap(this.getMap(2));
+
+        const roomsAround = new RoomsAround(1, rightSpiralPart, 15);
+        roomsAround.imprintToMap(this.getMap(1));
 
         leftSpiralPart.connect(this)
         rightSpiralPart.connect(this)

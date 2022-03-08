@@ -6,6 +6,8 @@ export const enum TileType {
     SearchedBox,
     DestroyedBox,
     WarpPoint,
+    Door,
+
 }
 
 export class Tile {
