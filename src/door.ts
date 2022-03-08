@@ -20,7 +20,7 @@ export class Door extends Tile {
         this.glyph.character = glyphChar(this.locked);
     }
 
-    pryOpen(strength: number) : boolean {
+    pryOpen(strength: number): boolean {
         if (strength >= this.locked) {
             this.locked = 0;
             this.glyph.character = glyphChar(this.locked);

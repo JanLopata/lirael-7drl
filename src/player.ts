@@ -37,6 +37,10 @@ export class Player implements Actor {
             let diff = DIRS[8][this.keyMap[code]];
             let newPoint = new Point(this.position.x + diff[0], this.position.y + diff[1]);
             if (!this.game.mapIsPassable(this.position.level, newPoint.x, newPoint.y)) {
+
+                if (this.checkInteraction(new Point3D(this.position.level, newPoint.x, newPoint.y)))
+                    return true;
+
                 return;
             }
             this.position = new Point3D(this.position.level, newPoint.x, newPoint.y);
@@ -51,4 +55,9 @@ export class Player implements Actor {
         }
         return validInput;
     }
+
+    checkInteraction(target: Point3D): boolean {
+        return this.game.interact(this, target);
+    }
+
 }

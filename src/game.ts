@@ -16,6 +16,7 @@ import {DisplaySizing} from "./display_sizing";
 import {Multimap} from "./multimap";
 import {Point3D} from "./point3d";
 import {Warper} from "./warper";
+import {Door} from "./door";
 
 export class Game {
     private display: Display;
@@ -162,6 +163,19 @@ export class Game {
                 this.messageLog.appendText("There is no box here!");
                 break;
         }
+    }
+
+    interact(actor: Actor, target: Point3D): boolean {
+
+        let tile = this.multimap.getTile(target.level, target.x, target.y);
+        if (tile == null)
+            return false;
+
+        if (tile instanceof Door) {
+            tile.pryOpen(1);
+            return true;
+        }
+
     }
 
     catchPlayer(actor: Actor): void {
