@@ -1,5 +1,5 @@
-import { Point } from "./point";
-import { Glyph } from "./glyph";
+import {Glyph} from "./glyph";
+import {Point3D} from "./point3d";
 
 export const enum ActorType {
     Player,
@@ -8,7 +8,7 @@ export const enum ActorType {
 }
 
 export interface Actor {
-    position: Point;
+    position: Point3D;
     glyph: Glyph;
     type: ActorType;
 
