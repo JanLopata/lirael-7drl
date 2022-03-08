@@ -4,6 +4,8 @@ import {SpiralPart} from "./spiral_part";
 import Digger from "rot-js/lib/map/digger";
 import {Point} from "./point";
 import {Door} from "./tile/door";
+import {RoomTile} from "./tile/room_tile";
+import {RoomProperties} from "./tile/room_property";
 
 
 export class RoomsAround {
@@ -17,6 +19,7 @@ export class RoomsAround {
     private readonly width: number;
     private readonly height: number;
     private readonly shift: Point;
+    private digger: Digger;
 
     constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number) {
         this.level = level;
@@ -27,7 +30,7 @@ export class RoomsAround {
         this.width = Math.round(1.7 * this.outsideDiameter);
         this.height = 2 * this.outsideDiameter;
 
-        const shiftX = spiralPart.orientedLeft ? - this.width : 0;
+        const shiftX = spiralPart.orientedLeft ? -this.width : 0;
         this.shift = new Point(shiftX, -this.outsideDiameter);
 
         this.generate();
@@ -46,9 +49,20 @@ export class RoomsAround {
             room.getDoors(this.doorsCallback.bind(this));
         }
         console.log("created rooms: " + digger.getRooms().length)
+        this.digger = digger;
     }
 
     public imprintToMap(map: Map) {
+
+        for (let room of this.digger.getRooms()) {
+            const props = new RoomProperties(room);
+            const roomTile = new RoomTile(props);
+            for (let i = room._x1; i <= room._x2; i++) {
+                for (let j = room._y1; j <= room._y2; j++) {
+                    map.setTile(i + this.shift.x, j + this.shift.y, roomTile);
+                }
+            }
+        }
 
         for (let generatedTilesKey in this.generatedTiles) {
             let point = this.keyToPoint(generatedTilesKey).plus(this.shift);
