@@ -8,12 +8,15 @@ import {Door} from "./door";
 
 export class RoomsAround {
 
-    private generatedTiles: { [key: string]: Tile };
-    private doorsList: Point[];
+    private readonly generatedTiles: { [key: string]: Tile };
+    private readonly doorsList: Point[];
 
     private readonly level: number;
     private readonly spiralPart: SpiralPart;
     private readonly outsideDiameter: number;
+    private readonly width: number;
+    private readonly height: number;
+    private readonly shift: Point;
 
     constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number) {
         this.level = level;
@@ -21,35 +24,40 @@ export class RoomsAround {
         this.outsideDiameter = outsideDiameter;
         this.doorsList = [];
         this.generatedTiles = {};
+        this.width = Math.round(1.7 * this.outsideDiameter);
+        this.height = 2 * this.outsideDiameter;
+
+        const shiftX = spiralPart.orientedLeft ? - this.width : 0;
+        this.shift = new Point(shiftX, -this.outsideDiameter);
+
         this.generate();
 
     }
 
     generate(): void {
-        let digger = new Digger(this.outsideDiameter * 1.7, 2 * this.outsideDiameter, {"dugPercentage" :0.4})
+        let digger = new Digger(this.width, this.height, {"dugPercentage": 0.4})
         digger.create(this.diggerCallback.bind(this));
 
         for (let room of digger.getRooms()) {
+            const x = this.shift.x + room.getCenter()[0];
+            const y = this.shift.y + room.getCenter()[1]
+            console.log("level " + this.level + " room: " + x + "," + y);
             room.getDoors(this.doorsCallback);
         }
-        console.log("created rooms: " + digger.getRooms().length )
-        
+        console.log("created rooms: " + digger.getRooms().length)
     }
 
     public imprintToMap(map: Map) {
 
-        const shift = new Point(0, -this.outsideDiameter);
-
         for (let generatedTilesKey in this.generatedTiles) {
-           let point = this.keyToPoint(generatedTilesKey).plus(shift);
-           if (map.getTile(point.x, point.y) == null) {
-               console.log("adding room tile " + point.x + "," + point.y)
-               map.setTile(point.x, point.y, Tile.floor);
-           }
+            let point = this.keyToPoint(generatedTilesKey).plus(this.shift);
+            if (map.getTile(point.x, point.y) == null) {
+                map.setTile(point.x, point.y, Tile.floor);
+            }
         }
 
         for (let doorPoint of this.doorsList) {
-            const point = doorPoint.plus(shift);
+            const point = doorPoint.plus(this.shift);
 
             if (map.getTile(point.x, point.y) == null) {
                 map.setTile(point.x, point.y, new Door(1));

@@ -36,10 +36,8 @@ export class Multimap {
         const spiralPart = new SpiralPart(level, 4, 9, left)
         spiralPart.imprintToMap(this.getMap(level));
         this.spirals.push(spiralPart);
-        if (!left) {
-            const roomsAround = new RoomsAround(level, spiralPart, 15);
-            roomsAround.imprintToMap(this.getMap(level));
-        }
+        const roomsAround = new RoomsAround(level, spiralPart, 15);
+        roomsAround.imprintToMap(this.getMap(level));
     }
 
     connectSpirals() {
