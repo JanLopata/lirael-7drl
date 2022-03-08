@@ -172,7 +172,11 @@ export class Game {
             return false;
 
         if (tile instanceof Door) {
-            tile.pryOpen(1);
+            if (tile.isOpen()) {
+                tile.close(1);
+            } else {
+                tile.pryOpen(1);
+            }
             return true;
         }
 

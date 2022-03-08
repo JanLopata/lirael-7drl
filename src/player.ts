@@ -36,11 +36,12 @@ export class Player implements Actor {
         if (code in this.keyMap) {
             let diff = DIRS[8][this.keyMap[code]];
             let newPoint = new Point(this.position.x + diff[0], this.position.y + diff[1]);
+
+            if (this.hasModifier(event)) {
+                return this.checkInteraction(new Point3D(this.position.level, newPoint.x, newPoint.y))
+            }
+
             if (!this.game.mapIsPassable(this.position.level, newPoint.x, newPoint.y)) {
-
-                if (this.checkInteraction(new Point3D(this.position.level, newPoint.x, newPoint.y)))
-                    return true;
-
                 return;
             }
             this.position = new Point3D(this.position.level, newPoint.x, newPoint.y);
@@ -54,6 +55,10 @@ export class Player implements Actor {
             validInput = code === KEYS.VK_NUMPAD5; // Wait a turn
         }
         return validInput;
+    }
+
+    hasModifier(e: KeyboardEvent): boolean {
+        return (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey);
     }
 
     checkInteraction(target: Point3D): boolean {

@@ -47,7 +47,7 @@ export class Map {
             return false;
 
         if (tile instanceof Door) {
-            return tile.locked <= 0;
+            return tile.isOpen();
         }
 
         return true;
