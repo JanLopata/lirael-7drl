@@ -16,6 +16,7 @@ import {DisplaySizing} from "./display_sizing";
 import {Multimap} from "./multimap";
 import {Point3D} from "./point3d";
 import {Warper} from "./warper";
+import {Door} from "./door";
 
 export class Game {
     private display: Display;
@@ -103,6 +104,11 @@ export class Game {
         return (x, y) => map.isPassable(x, y);
     }
 
+    onLevelNavigable(level: number, unlockStrength: number): (x: number, y: number) => boolean {
+        let map = this.multimap.getMap(level);
+        return (x, y) => map.isNavigable(x, y, unlockStrength);
+    }
+
     occupiedByEnemy(x: number, y: number): boolean {
         for (let enemy of this.enemies) {
             if (enemy.position.x == x && enemy.position.y == y) {
@@ -162,6 +168,23 @@ export class Game {
                 this.messageLog.appendText("There is no box here!");
                 break;
         }
+    }
+
+    interact(actor: Actor, target: Point3D): boolean {
+
+        let tile = this.multimap.getTile(target.level, target.x, target.y);
+        if (tile == null)
+            return false;
+
+        if (tile instanceof Door) {
+            if (tile.isOpen()) {
+                tile.close(1);
+            } else {
+                tile.pryOpen(1);
+            }
+            return true;
+        }
+
     }
 
     catchPlayer(actor: Actor): void {

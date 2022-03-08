@@ -22,15 +22,24 @@ export class Pedro implements Actor {
             return Promise.resolve();
         }
 
-        let astar = new Path.AStar(target.x, target.y, this.game.onLevelPassable(this.position.level), {topology: 4});
+        let astar = new Path.AStar(target.x, target.y, this.game.onLevelNavigable(this.position.level, 1), {topology: 4});
 
         this.path = [];
         astar.compute(this.position.x, this.position.y, this.pathCallback.bind(this));
         this.path.shift(); // remove Pedros position
 
         if (this.path.length > 0) {
-            if (!this.game.occupiedByEnemy(this.path[0].x, this.path[0].y)) {
-                this.position = new Point3D(this.position.level, this.path[0].x, this.path[0].y);
+            let nextStep = this.path[0];
+            let nextStep3D = new Point3D(this.position.level, nextStep.x, nextStep.y);
+
+            if (!this.game.mapIsPassable(this.position.level, nextStep.x, nextStep.y)) {
+                // probably doors to unlock
+                this.game.interact(this, nextStep3D);
+                return Promise.resolve()
+            }
+
+            if (!this.game.occupiedByEnemy(nextStep.x, nextStep.y)) {
+                this.position = nextStep3D;
             }
         }
 

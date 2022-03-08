@@ -3,6 +3,7 @@ import {Game} from "./game";
 import {Tile, TileType} from "./tile";
 import {Point} from "./point";
 import {DisplaySizing} from "./display_sizing";
+import {Door} from "./door";
 
 export class Map {
     map: { [key: string]: Tile };
@@ -41,7 +42,27 @@ export class Map {
     }
 
     isPassable(x: number, y: number): boolean {
-        return this.coordinatesToKey(x, y) in this.map;
+        let tile = this.getTile(x, y);
+        if (tile == null)
+            return false;
+
+        if (tile instanceof Door) {
+            return tile.isOpen();
+        }
+
+        return true;
+    }
+
+    isNavigable(x: number, y: number, unlockStrength: number): boolean {
+        let tile = this.getTile(x, y);
+        if (tile == null)
+            return false;
+
+        if (tile instanceof Door) {
+            return tile.locked <= unlockStrength;
+        }
+
+        return true;
     }
 
     draw(playerPosition: Point, displaySizing: DisplaySizing): void {
