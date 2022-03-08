@@ -1,4 +1,4 @@
-import { Glyph } from "./glyph";
+import { Glyph } from "../glyph";
 
 export const enum TileType {
     Floor,
@@ -7,6 +7,8 @@ export const enum TileType {
     DestroyedBox,
     WarpPoint,
     Door,
+    RoomFloor,
+    CorridorFloor
 
 }
 

@@ -1,9 +1,9 @@
 import {Map} from "./map"
-import {Tile, TileType} from "./tile";
+import {Tile, TileType} from "./tile/tile";
 import {SpiralPart} from "./spiral_part";
 import Digger from "rot-js/lib/map/digger";
 import {Point} from "./point";
-import {Door} from "./door";
+import {Door} from "./tile/door";
 
 
 export class RoomsAround {
@@ -35,7 +35,8 @@ export class RoomsAround {
     }
 
     generate(): void {
-        let digger = new Digger(this.width, this.height, {"dugPercentage": 0.4})
+        let digger = new Digger(this.width, this.height,
+            {"dugPercentage": 0.6, "corridorLength": [1, 3], "roomHeight": [4, 9], "roomWidth": [4, 9]})
         digger.create(this.diggerCallback.bind(this));
 
         for (let room of digger.getRooms()) {

@@ -1,5 +1,5 @@
 import {Tile} from "./tile";
-import {Glyph} from "./glyph";
+import {Glyph} from "../glyph";
 
 export class WarpTile extends Tile {
 

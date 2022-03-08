@@ -1,5 +1,5 @@
 import {Tile} from "./tile";
-import {Glyph} from "./glyph";
+import {Glyph} from "../glyph";
 
 function glyphChar(locked: number) {
     if (locked < 1)
@@ -11,7 +11,7 @@ function glyphChar(locked: number) {
 export class Door extends Tile {
 
     constructor(public locked: number) {
-        super(Tile.warpPoint.type, new Glyph(glyphChar(locked), Tile.warpPoint.glyph.foregroundColor, Tile.warpPoint.glyph.backgroundColor));
+        super(Tile.warpPoint.type, new Glyph(glyphChar(locked), Tile.door.glyph.foregroundColor, Tile.door.glyph.backgroundColor));
         this.locked = locked;
     }
 

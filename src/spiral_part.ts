@@ -1,7 +1,7 @@
 import {Map} from "./map"
-import {Tile} from "./tile";
+import {Tile} from "./tile/tile";
 import {Multimap} from "./multimap";
-import {WarpTile} from "./warptile";
+import {WarpTile} from "./tile/warptile";
 
 export class SpiralPart {
 
