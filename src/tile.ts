@@ -16,6 +16,7 @@ export class Tile {
     static readonly searchedBox = new Tile(TileType.SearchedBox, new Glyph("#", "#666"));
     static readonly destroyedBox = new Tile(TileType.DestroyedBox, new Glyph("x", "#555"));
     static readonly warpPoint = new Tile(TileType.WarpPoint, new Glyph("*", "#ff7700"));
+    static readonly door = new Tile(TileType.Door, new Glyph("+", "#654321"))
 
 
     constructor(public readonly type: TileType, public readonly glyph: Glyph) { }

@@ -1,5 +1,5 @@
 import {Map} from "./map"
-import {Tile} from "./tile";
+import {Tile, TileType} from "./tile";
 import {SpiralPart} from "./spiral_part";
 import Digger from "rot-js/lib/map/digger";
 import {Point} from "./point";
@@ -42,7 +42,7 @@ export class RoomsAround {
             const x = this.shift.x + room.getCenter()[0];
             const y = this.shift.y + room.getCenter()[1]
             console.log("level " + this.level + " room: " + x + "," + y);
-            room.getDoors(this.doorsCallback);
+            room.getDoors(this.doorsCallback.bind(this));
         }
         console.log("created rooms: " + digger.getRooms().length)
     }
@@ -58,8 +58,9 @@ export class RoomsAround {
 
         for (let doorPoint of this.doorsList) {
             const point = doorPoint.plus(this.shift);
+            console.log("adding doors to level " + this.level + ' ' + point)
 
-            if (map.getTile(point.x, point.y) == null) {
+            if (map.getTileType(point.x, point.y) == TileType.Floor) {
                 map.setTile(point.x, point.y, new Door(1));
             }
         }
@@ -76,7 +77,7 @@ export class RoomsAround {
     }
 
     private doorsCallback(x: number, y: number): void {
-        // this.doorsList.push(new Point(x, y));
+        this.doorsList.push(new Point(x, y));
     }
 
     private diggerCallback(x: number, y: number, wall: number): void {

@@ -17,4 +17,8 @@ export class Point {
         return new Point(-this.x, -this.y);
     }
 
+    public toString = () : string => {
+        return this.x + "," + this.y
+    }
+
 }
