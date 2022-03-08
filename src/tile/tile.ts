@@ -7,7 +7,7 @@ export const enum TileType {
     DestroyedBox,
     WarpPoint,
     Door,
-    RoomFloor,
+    Bookshelf,
     CorridorFloor
 
 }
@@ -21,5 +21,5 @@ export class Tile {
     static readonly door = new Tile(TileType.Door, new Glyph("+", "#654321"))
 
 
-    constructor(public readonly type: TileType, public readonly glyph: Glyph) { }
+    constructor(public readonly type: TileType, public glyph: Glyph) { }
 }

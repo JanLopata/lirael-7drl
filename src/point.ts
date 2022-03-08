@@ -13,8 +13,20 @@ export class Point {
         return new Point(this.x + another.x, this.y + another.y);
     }
 
+    minus(another: Point): Point {
+        return this.plus(another.reverse());
+    }
+
     reverse(): Point {
         return new Point(-this.x, -this.y);
+    }
+
+    dist4(another: Point) {
+        return this.minus(another).norm4();
+    }
+
+    norm4(): number {
+        return Math.abs(this.x) + Math.abs(this.y);
     }
 
     public toString = () : string => {

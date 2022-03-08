@@ -6,12 +6,14 @@ import {Point} from "./point";
 import {Door} from "./tile/door";
 import {RoomTile} from "./tile/room_tile";
 import {RoomProperties} from "./tile/room_property";
+import {RoomDecorator} from "./room_decorator";
 
 
 export class RoomsAround {
 
     private readonly generatedTiles: { [key: string]: Tile };
     private readonly doorsList: Point[];
+    private readonly roomsWithProperty: RoomProperties[];
 
     private readonly level: number;
     private readonly spiralPart: SpiralPart;
@@ -26,10 +28,11 @@ export class RoomsAround {
         this.spiralPart = spiralPart;
         this.outsideDiameter = outsideDiameter;
         this.doorsList = [];
+        this.roomsWithProperty = [];
         this.generatedTiles = {};
         this.width = Math.round(1.7 * this.outsideDiameter);
-        this.height = 2 * this.outsideDiameter;
 
+        this.height = 2 * this.outsideDiameter;
         const shiftX = spiralPart.orientedLeft ? -this.width : 0;
         this.shift = new Point(shiftX, -this.outsideDiameter);
 
@@ -55,11 +58,13 @@ export class RoomsAround {
     public imprintToMap(map: Map) {
 
         for (let room of this.digger.getRooms()) {
-            const props = new RoomProperties(room);
-            const roomTile = new RoomTile(props);
+            let props = new RoomProperties(room, this.shift);
+            let roomTile = new RoomTile(props);
+            this.roomsWithProperty.push(props);
             for (let i = room._x1; i <= room._x2; i++) {
                 for (let j = room._y1; j <= room._y2; j++) {
-                    map.setTile(i + this.shift.x, j + this.shift.y, roomTile);
+                    if (map.getTile(this.shift.x + i, this.shift.y + j) == null)
+                        map.setTile(i + this.shift.x, j + this.shift.y, roomTile);
                 }
             }
         }
@@ -80,6 +85,10 @@ export class RoomsAround {
             }
         }
 
+        let roomDecorator = new RoomDecorator(map);
+        for (let room of this.roomsWithProperty) {
+            roomDecorator.decorate(room);
+        }
     }
 
     private coordinatesToKey(x: number, y: number): string {
