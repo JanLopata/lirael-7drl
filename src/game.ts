@@ -34,7 +34,6 @@ export class Game {
 
     private gameSize: { width: number, height: number };
     private displaySizing: DisplaySizing
-    private levelsShown: number[];
     private mapSize: { width: number, height: number };
     private statusLinePosition: Point;
     private actionLogPosition: Point;
@@ -262,28 +261,49 @@ export class Game {
         console.log(this.player)
         console.log(this.player.position)
 
-        // buggy view of neighbour levels
-        this.levelsShown = [this.player.position.level];
-        const above = this.multimap.getMap(this.player.position.level + 1)
-        if (above != null && this.player.position.x * this.player.position.y < 0) {
-            this.levelsShown.push(this.player.position.level + 1)
-            above.draw(this.player.position.toPoint(), this.displaySizing)
-        }
-        const under = this.multimap.getMap(this.player.position.level - 1)
-        if (under != null && this.player.position.x * this.player.position.y > 0) {
-            this.levelsShown.push(this.player.position.level - 1)
-            under.draw(this.player.position.toPoint(), this.displaySizing)
+        // somewhat confusing view of neighbour levels
+        const levelsToShow = this.getLevelsToShow();
+        for (let level of levelsToShow) {
+            let levelMap = this.multimap.getMap(level);
+            if (levelMap != null) {
+                levelMap.draw(this.player.position.toPoint(), this.displaySizing);
+            }
         }
 
-        this.multimap.getMap(this.player.position.level).draw(this.player.position.toPoint(), this.displaySizing);
         this.statusLine.draw();
         this.messageLog.draw();
         this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, this.player.position.toPoint(), this.player.glyph);
         for (let enemy of this.enemies) {
-            if (this.levelsShown.indexOf(enemy.position.level) >= 0) {
+            if (levelsToShow.indexOf(enemy.position.level) >= 0) {
                 this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, enemy.position.toPoint(), enemy.glyph);
             }
         }
+    }
+
+    private getLevelsToShow() {
+        const result = [];
+        if (this.player.position.x == 0) {
+            if (this.player.position.y < 0) {
+                result.push(this.player.position.level + 1)
+            } else {
+                result.push(this.player.position.level - 1)
+            }
+            result.push(this.player.position.level);
+            return result;
+        }
+
+        if (this.player.position.y == 0) {
+           return [this.player.position.level];
+        }
+
+        if (this.player.position.x * this.player.position.y < 0) {
+            result.push(this.player.position.level + 1)
+        } else {
+            result.push(this.player.position.level - 1)
+        }
+        result.push(this.player.position.level);
+        return result;
+
     }
 
     private handleInput(event: KeyboardEvent): boolean {
