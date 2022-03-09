@@ -95,6 +95,30 @@ export class Multimap {
 
     }
 
+    getRandomTargets(filter: (tile: Tile) => boolean, quantity: number = 1): Point3D[] {
+
+        let buffer: Point3D[] = [];
+        let result: Point3D[] = [];
+
+        for (let levelKey in this.multimap) {
+            let level = parseInt(levelKey);
+            let levelMap = this.getMap(level).map
+            for (let key in levelMap) {
+                const tile = levelMap[key]
+                if (filter(tile)) {
+                    let point = Multimap.keyToPoint(key);
+                    buffer.push(new Point3D(level, point.x, point.y));
+                }
+            }
+        }
+        let index: number;
+        while (buffer.length > 0 && result.length < quantity) {
+            index = Math.floor(RNG.getUniform() * buffer.length);
+            result.push(buffer.splice(index, 1)[0]);
+        }
+        return result;
+    }
+
     getTileType(level: number, x: number, y: number): TileType {
         return this.getMap(level).getTileType(x, y);
     }

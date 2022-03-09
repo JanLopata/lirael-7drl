@@ -17,6 +17,9 @@ import {Multimap} from "./multimap";
 import {Point3D} from "./point3d";
 import {Warper} from "./warper";
 import {Door} from "./tile/door";
+import {Sending} from "./actor/sending";
+import {RoomTile} from "./tile/room_tile";
+import {RoomType} from "./room/room_decorator";
 
 export class Game {
     private display: Display;
@@ -197,6 +200,10 @@ export class Game {
         return this.multimap.getRandomTilePositions(type, quantity);
     }
 
+    getRandomTarget(filter: (tile: Tile) => boolean): Point3D {
+        return this.multimap.getRandomTargets(filter, 1)[0];
+    }
+
     private initializeGame(): void {
         this.display.clear();
 
@@ -322,9 +329,23 @@ export class Game {
                 this.enemies.push(new TinyPedro(this, position));
             }
         }
+
+        this.createSendings();
+
         // console.log(this.enemies)
         console.log(positions)
         console.log(this.player.position)
+    }
+
+    private createSendings() {
+        const numberOfSendings = 5;
+        let positions = this.multimap.getRandomTargets(
+            tile => (tile instanceof RoomTile && tile.roomProps.type == RoomType.LIBRARY),
+            numberOfSendings);
+        for (const item of positions) {
+            this.enemies.push(new Sending(this, item));
+        }
+        return positions;
     }
 
     private resetStatusLine(): void {
