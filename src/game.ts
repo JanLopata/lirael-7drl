@@ -20,6 +20,7 @@ import {Door} from "./tile/door";
 import {Sending} from "./actor/sending";
 import {RoomTile} from "./tile/room_tile";
 import {RoomType} from "./room/room_decorator";
+import {Clair} from "./actor/clair";
 
 export class Game {
     private display: Display;
@@ -331,6 +332,7 @@ export class Game {
         }
 
         this.createSendings();
+        this.createClairs();
 
         // console.log(this.enemies)
         console.log(positions)
@@ -344,6 +346,17 @@ export class Game {
             numberOfSendings);
         for (const item of positions) {
             this.enemies.push(new Sending(this, item));
+        }
+        return positions;
+    }
+
+    private createClairs() {
+        const numberOfClairs = 5;
+        let positions = this.multimap.getRandomTargets(
+            tile => (tile instanceof RoomTile),
+            numberOfClairs);
+        for (const item of positions) {
+            this.enemies.push(new Clair(this, item));
         }
         return positions;
     }

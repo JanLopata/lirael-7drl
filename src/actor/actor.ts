@@ -6,6 +6,7 @@ export const enum ActorType {
     Pedro,
     TinyPedro,
     Sending,
+    Clair
 }
 
 export interface Actor {
