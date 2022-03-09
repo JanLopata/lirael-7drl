@@ -1,7 +1,7 @@
 import {Actor} from "../actor";
 import {Room} from "rot-js/lib/map/features";
 import {Point} from "../point";
-import {RoomType} from "../room_decorator";
+import {RoomType} from "./room_decorator";
 
 
 export class RoomProperties {

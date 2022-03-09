@@ -1,8 +1,5 @@
-import {Map} from "./map"
-import {RoomProperties} from "./tile/room_property";
-import {RNG} from "rot-js";
-import {Point} from "./point";
-import {Bookshelf} from "./tile/bookshelf";
+import {Map} from "../map"
+import {RoomProperties} from "./room_property";
 import {LibraryDecorator} from "./library_decorator";
 
 
@@ -30,9 +27,9 @@ export class RoomDecorator {
     }
 
     constructor() {
-        this.roomTypeLimit[RoomType.DINING_ROOM] = 1;
-        this.roomTypeLimit[RoomType.BEDROOM] = 1;
-        this.roomTypeLimit[RoomType.LIBRARY] = 1;
+        this.roomTypeLimit[RoomType.DINING_ROOM] = 2;
+        this.roomTypeLimit[RoomType.BEDROOM] = 12;
+        this.roomTypeLimit[RoomType.LIBRARY] = 8;
     }
 
 

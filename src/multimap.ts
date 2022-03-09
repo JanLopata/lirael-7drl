@@ -8,7 +8,7 @@ import {SpiralPart} from "./spiral_part";
 import {Point3D} from "./point3d";
 import {WarpTile} from "./tile/warptile";
 import {RoomsAround} from "./rooms_around";
-import {RoomDecorator} from "./room_decorator";
+import {RoomDecorator} from "./room/room_decorator";
 
 export class Multimap {
     private multimap: { [level: number]: Map }

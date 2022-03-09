@@ -1,5 +1,5 @@
 import {Tile} from "./tile";
-import {RoomProperties} from "./room_property";
+import {RoomProperties} from "../room/room_property";
 import {RNG} from "rot-js";
 import {Glyph} from "../glyph";
 

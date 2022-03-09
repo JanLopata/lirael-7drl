@@ -5,10 +5,10 @@ import Digger from "rot-js/lib/map/digger";
 import {Point} from "./point";
 import {Door} from "./tile/door";
 import {RoomTile} from "./tile/room_tile";
-import {RoomProperties} from "./tile/room_property";
-import {RoomDecorator} from "./room_decorator";
+import {RoomProperties} from "./room/room_property";
+import {RoomDecorator} from "./room/room_decorator";
 
-const roomDebug = true;
+const roomDebug = false;
 
 export class RoomsAround {
 
