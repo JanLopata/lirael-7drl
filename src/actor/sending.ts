@@ -2,9 +2,8 @@ import {Game} from "../game";
 import {ActorType} from "./actor";
 import {Glyph} from "../glyph";
 import {Point3D} from "../point3d";
-import {Bookshelf} from "../tile/bookshelf";
 import {AIActor} from "./ai_actor";
-import {Tile} from "../tile/tile";
+import {Tile, TileType} from "../tile/tile";
 
 export class Sending extends AIActor {
 
@@ -14,6 +13,6 @@ export class Sending extends AIActor {
     }
 
     targetFilter(tile: Tile): boolean {
-        return tile instanceof Bookshelf
+        return tile.type == TileType.Bookshelf;
     }
 }

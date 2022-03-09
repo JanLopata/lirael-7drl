@@ -1,7 +1,6 @@
 import {Map} from "../map"
 import {RoomProperties} from "./room_property";
 import {Point} from "../point";
-import {Bookshelf} from "../tile/bookshelf";
 import {Tile} from "../tile/tile";
 
 export class LibraryDecorator {
@@ -36,7 +35,7 @@ export class LibraryDecorator {
                 if (this.doorNearby(target, room)) {
                     continue
                 }
-                this.map.setTile(target.x, target.y, new Bookshelf());
+                this.map.setTile(target.x, target.y, Tile.bookshelf);
             }
         }
     }
@@ -51,7 +50,7 @@ export class LibraryDecorator {
                 if (this.doorNearby(target, room)) {
                     continue
                 }
-                this.map.setTile(target.x, target.y, new Bookshelf());
+                this.map.setTile(target.x, target.y, Tile.bookshelf);
             }
         }
     }

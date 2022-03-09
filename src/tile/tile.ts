@@ -24,7 +24,7 @@ export class Tile {
     static readonly door = new Tile(TileType.Door, new Glyph("+", "#654321"))
     static readonly chair = new Tile(TileType.Chair, new Glyph("x", "#7d6c61"))
     static readonly table = new Tile(TileType.Table, new Glyph("T", "#779bdc"))
-
+    static readonly bookshelf = new Tile(TileType.Bookshelf, new Glyph("#", "#663931"))
 
 
     constructor(public readonly type: TileType, public glyph: Glyph) { }
