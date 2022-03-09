@@ -1,4 +1,4 @@
-import {Actor} from "./actor";
+import {Actor} from "./actor/actor";
 import {Multimap} from "./multimap";
 import {WarpTile} from "./tile/warptile";
 import {Point3D} from "./point3d";

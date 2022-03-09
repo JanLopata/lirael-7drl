@@ -1,22 +1,26 @@
 import {Display, KEYS, RNG, Scheduler} from "rot-js/lib/index";
 import Simple from "rot-js/lib/scheduler/simple";
 
-import {Player} from "./player";
+import {Player} from "./actor/player";
 import {Point} from "./point";
 import {Glyph} from "./glyph";
-import {Actor, ActorType} from "./actor";
-import {Pedro} from "./pedro";
+import {Actor, ActorType} from "./actor/actor";
+import {Pedro} from "./actor/pedro";
 import {GameState} from "./game-state";
 import {StatusLine} from "./status-line";
 import {MessageLog} from "./message-log";
 import {InputUtility} from "./input-utility";
 import {Tile, TileType} from "./tile/tile";
-import {TinyPedro} from "./tiny-pedro";
+import {TinyPedro} from "./actor/tiny-pedro";
 import {DisplaySizing} from "./display_sizing";
 import {Multimap} from "./multimap";
 import {Point3D} from "./point3d";
 import {Warper} from "./warper";
 import {Door} from "./tile/door";
+import {Sending} from "./actor/sending";
+import {RoomTile} from "./tile/room_tile";
+import {RoomType} from "./room/room_decorator";
+import {Clair} from "./actor/clair";
 
 export class Game {
     private display: Display;
@@ -197,6 +201,10 @@ export class Game {
         return this.multimap.getRandomTilePositions(type, quantity);
     }
 
+    getRandomTarget(filter: (tile: Tile) => boolean): Point3D {
+        return this.multimap.getRandomTargets(filter, 1)[0];
+    }
+
     private initializeGame(): void {
         this.display.clear();
 
@@ -253,23 +261,49 @@ export class Game {
         console.log(this.player)
         console.log(this.player.position)
 
-        // buggy view of neighbour levels
-        const above = this.multimap.getMap(this.player.position.level + 1)
-        if (above != null && this.player.position.x * this.player.position.y < 0) {
-            above.draw(this.player.position.toPoint(), this.displaySizing)
-        }
-        const under = this.multimap.getMap(this.player.position.level - 1)
-        if (under != null && this.player.position.x * this.player.position.y > 0) {
-            under.draw(this.player.position.toPoint(), this.displaySizing)
+        // somewhat confusing view of neighbour levels
+        const levelsToShow = this.getLevelsToShow();
+        for (let level of levelsToShow) {
+            let levelMap = this.multimap.getMap(level);
+            if (levelMap != null) {
+                levelMap.draw(this.player.position.toPoint(), this.displaySizing);
+            }
         }
 
-        this.multimap.getMap(this.player.position.level).draw(this.player.position.toPoint(), this.displaySizing);
         this.statusLine.draw();
         this.messageLog.draw();
         this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, this.player.position.toPoint(), this.player.glyph);
         for (let enemy of this.enemies) {
-            this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, enemy.position.toPoint(), enemy.glyph);
+            if (levelsToShow.indexOf(enemy.position.level) >= 0) {
+                this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, enemy.position.toPoint(), enemy.glyph);
+            }
         }
+    }
+
+    private getLevelsToShow() {
+        const result = [];
+        if (this.player.position.x == 0) {
+            if (this.player.position.y < 0) {
+                result.push(this.player.position.level + 1)
+            } else {
+                result.push(this.player.position.level - 1)
+            }
+            result.push(this.player.position.level);
+            return result;
+        }
+
+        if (this.player.position.y == 0) {
+           return [this.player.position.level];
+        }
+
+        if (this.player.position.x * this.player.position.y < 0) {
+            result.push(this.player.position.level + 1)
+        } else {
+            result.push(this.player.position.level - 1)
+        }
+        result.push(this.player.position.level);
+        return result;
+
     }
 
     private handleInput(event: KeyboardEvent): boolean {
@@ -322,9 +356,35 @@ export class Game {
                 this.enemies.push(new TinyPedro(this, position));
             }
         }
+
+        this.createSendings();
+        this.createClairs();
+
         // console.log(this.enemies)
         console.log(positions)
         console.log(this.player.position)
+    }
+
+    private createSendings() {
+        const numberOfSendings = 5;
+        let positions = this.multimap.getRandomTargets(
+            tile => (tile instanceof RoomTile && tile.roomProps.type == RoomType.LIBRARY),
+            numberOfSendings);
+        for (const item of positions) {
+            this.enemies.push(new Sending(this, item));
+        }
+        return positions;
+    }
+
+    private createClairs() {
+        const numberOfClairs = 5;
+        let positions = this.multimap.getRandomTargets(
+            tile => (tile instanceof RoomTile),
+            numberOfClairs);
+        for (const item of positions) {
+            this.enemies.push(new Clair(this, item));
+        }
+        return positions;
     }
 
     private resetStatusLine(): void {

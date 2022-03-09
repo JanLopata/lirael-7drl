@@ -13,7 +13,7 @@ import {RoomDecorator} from "./room/room_decorator";
 export class Multimap {
     private multimap: { [level: number]: Map }
     private spirals: SpiralPart[];
-    private roomsAround: RoomsAround[];
+    private roomsAround: RoomsAround[] = [];
     private roomDecorator: RoomDecorator = new RoomDecorator();
 
     constructor(private game: Game) {
@@ -27,6 +27,7 @@ export class Multimap {
     generateMultimap(width: number, height: number): void {
         this.multimap = {};
         this.spirals = [];
+        this.roomsAround = [];
         for (let i = 0; i < 7; i++) {
             this.generateLevel(i);
         }
@@ -64,7 +65,7 @@ export class Multimap {
             let levelMap = this.getMap(level).map
             for (let key in levelMap) {
                 if (levelMap[key].type === type) {
-                    let point = this.keyToPoint(key);
+                    let point = Multimap.keyToPoint(key);
                     buffer.push(new Point3D(level, point.x, point.y));
                 }
             }
@@ -84,7 +85,7 @@ export class Multimap {
             let levelMapElement = levelMap[key];
             if (levelMapElement instanceof WarpTile) {
                 if (levelMapElement.targetLevel == toLevel) {
-                    let point = this.keyToPoint(key);
+                    let point = Multimap.keyToPoint(key);
                     buffer.push(new Point3D(fromLevel, point.x, point.y));
                 }
             }
@@ -92,6 +93,30 @@ export class Multimap {
         const index = Math.floor(RNG.getUniform() * buffer.length);
         return buffer[index];
 
+    }
+
+    getRandomTargets(filter: (tile: Tile) => boolean, quantity: number = 1): Point3D[] {
+
+        let buffer: Point3D[] = [];
+        let result: Point3D[] = [];
+
+        for (let levelKey in this.multimap) {
+            let level = parseInt(levelKey);
+            let levelMap = this.getMap(level).map
+            for (let key in levelMap) {
+                const tile = levelMap[key]
+                if (filter(tile)) {
+                    let point = Multimap.keyToPoint(key);
+                    buffer.push(new Point3D(level, point.x, point.y));
+                }
+            }
+        }
+        let index: number;
+        while (buffer.length > 0 && result.length < quantity) {
+            index = Math.floor(RNG.getUniform() * buffer.length);
+            result.push(buffer.splice(index, 1)[0]);
+        }
+        return result;
     }
 
     getTileType(level: number, x: number, y: number): TileType {
@@ -116,7 +141,7 @@ export class Multimap {
         let map = this.getMap(playerPosition.level);
 
         for (let key in map) {
-            let position = this.keyToPoint(key).plus(origin);
+            let position = Multimap.keyToPoint(key).plus(origin);
             if (!displaySizing.checkFits(position)) {
                 continue;
             }
@@ -124,7 +149,7 @@ export class Multimap {
         }
     }
 
-    private keyToPoint(key: string): Point {
+    private static keyToPoint(key: string): Point {
         let parts = key.split(",");
         return new Point(parseInt(parts[0]), parseInt(parts[1]));
     }

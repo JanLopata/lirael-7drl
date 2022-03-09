@@ -1,9 +1,9 @@
 import {Path} from "rot-js";
-import {Game} from "./game";
+import {Game} from "../game";
 import {Actor, ActorType} from "./actor";
-import {Point} from "./point";
-import {Glyph} from "./glyph";
-import {Point3D} from "./point3d";
+import {Point} from "../point";
+import {Glyph} from "../glyph";
+import {Point3D} from "../point3d";
 
 export class Pedro implements Actor {
     glyph: Glyph;
