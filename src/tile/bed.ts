@@ -1,14 +1,26 @@
 import {Tile, TileType} from "./tile";
 import {Glyph} from "../glyph";
+import {RNG} from "rot-js";
 
 function glyphChar(): string {
-    return "=";
+    return "%";
+}
+
+const colors = ["#ffffff",
+    "#d95763",
+    "#cbdbfc",
+    "#37946e",
+    "#eec39a",
+];
+
+function chooseColor(): string {
+    return RNG.getItem(colors);
 }
 
 export class Bed extends Tile {
 
     constructor() {
-        super(TileType.Bed, new Glyph(glyphChar(), Tile.box.glyph.foregroundColor, Tile.box.glyph.backgroundColor));
+        super(TileType.Bed, new Glyph(glyphChar(), chooseColor(), Tile.box.glyph.backgroundColor));
         this.glyph.character = glyphChar();
     }
 

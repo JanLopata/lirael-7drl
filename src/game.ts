@@ -35,6 +35,7 @@ export class Game {
     private gameSize: { width: number, height: number };
     private displaySizing: DisplaySizing
     private mapSize: { width: number, height: number };
+    private textLines = 4;
     private statusLinePosition: Point;
     private actionLogPosition: Point;
     private gameState: GameState;
@@ -43,19 +44,19 @@ export class Game {
     private pedroColor: string;
     private foregroundColor = "white";
     private backgroundColor = "black";
-    private maximumBoxes = 1;
+    private maximumBoxes = 10;
     public readonly warper: Warper;
 
     constructor() {
-        this.gameSize = { width: 75, height: 25 };
+        this.gameSize = { width: 75, height: 27 };
         this.displaySizing = new DisplaySizing(
-            new Point(this.gameSize.width / 2, this.gameSize.height / 2),
+            new Point(this.gameSize.width / 2, Math.ceil((this.gameSize.height- this.textLines) / 2)),
             new Point(0, 0),
-            new Point(this.gameSize.width, this.gameSize.height - 5)
+            new Point(this.gameSize.width, this.gameSize.height - this.textLines - 2)
         );
-        this.mapSize = { width: this.gameSize.width, height: this.gameSize.height - 4 };
-        this.statusLinePosition = new Point(0, this.gameSize.height - 4);
-        this.actionLogPosition = new Point(0, this.gameSize.height - 3);
+        this.mapSize = { width: this.gameSize.width, height: this.gameSize.height - this.textLines - 1 };
+        this.statusLinePosition = new Point(0, this.gameSize.height - this.textLines - 1);
+        this.actionLogPosition = new Point(0, this.gameSize.height - this.textLines);
 
         this.display = new Display({
             width: this.gameSize.width,
@@ -67,7 +68,7 @@ export class Game {
         this.gameState = new GameState();
         this.multimap = new Multimap(this);
         this.statusLine = new StatusLine(this, this.statusLinePosition, this.gameSize.width, { maxBoxes: this.maximumBoxes });
-        this.messageLog = new MessageLog(this, this.actionLogPosition, this.gameSize.width, 3);
+        this.messageLog = new MessageLog(this, this.actionLogPosition, this.gameSize.width, this.textLines);
         this.pedroColor = new Pedro(this, new Point3D(0, 0, 0)).glyph.foregroundColor;
         this.warper = new Warper(this.multimap);
 
@@ -320,6 +321,7 @@ export class Game {
         let helpMessage = [
             `Find the pineapple in one of the %c{${Tile.box.glyph.foregroundColor}}boxes%c{}.`,
             `Move with numpad, search %c{${Tile.box.glyph.foregroundColor}}box%c{} with 'spacebar' or 'return'.`,
+            `Interact with doors with CTRL + numpad, or ALT + numpad key`,
             `Watch out for %c{${this.pedroColor}}Pedro%c{}!`
         ];
 
