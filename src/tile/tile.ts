@@ -21,7 +21,7 @@ export class Tile {
     static readonly searchedBox = new Tile(TileType.SearchedBox, new Glyph("#", "#666"));
     static readonly destroyedBox = new Tile(TileType.DestroyedBox, new Glyph("x", "#555"));
     static readonly warpPoint = new Tile(TileType.WarpPoint, new Glyph("*", "#ff7700"));
-    static readonly door = new Tile(TileType.Door, new Glyph("+", "#654321"))
+    static readonly door = new Tile(TileType.Door, new Glyph("+", "#847e87"))
     static readonly chair = new Tile(TileType.Chair, new Glyph("x", "#7d6c61"))
     static readonly table = new Tile(TileType.Table, new Glyph("T", "#779bdc"))
     static readonly bookshelf = new Tile(TileType.Bookshelf, new Glyph("#", "#663931"))
