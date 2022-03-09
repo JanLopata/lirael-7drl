@@ -28,7 +28,7 @@ export class RoomProperties {
     }
 
     private doorsCallback(x: number, y: number): void {
-        this.doors.push(new Point(x, y));
+        this.doors.push(new Point(x, y).plus(this.shift));
     }
 
 }

@@ -39,7 +39,7 @@ export class Game {
     private pedroColor: string;
     private foregroundColor = "white";
     private backgroundColor = "black";
-    private maximumBoxes = 10;
+    private maximumBoxes = 1;
     warper: Warper;
 
     constructor() {
