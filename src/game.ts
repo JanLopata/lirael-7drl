@@ -40,7 +40,7 @@ export class Game {
     private foregroundColor = "white";
     private backgroundColor = "black";
     private maximumBoxes = 1;
-    warper: Warper;
+    public readonly warper: Warper;
 
     constructor() {
         this.gameSize = { width: 75, height: 25 };

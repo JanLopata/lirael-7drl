@@ -8,6 +8,7 @@ export const enum TileType {
     WarpPoint,
     Door,
     Bookshelf,
+    Bed,
     CorridorFloor
 
 }

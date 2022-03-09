@@ -67,7 +67,7 @@ export class RoomsAround {
     public imprintToMap(map: Map) {
 
         for (let room of this.digger.getRooms()) {
-            let props = new RoomProperties(room, this.shift);
+            let props = new RoomProperties(room, this.level, this.shift);
             let roomTile = new RoomTile(props);
             this.roomsWithProperty.push(props);
             for (let i = room._x1; i <= room._x2; i++) {

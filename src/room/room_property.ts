@@ -15,7 +15,7 @@ export class RoomProperties {
     public rd: Point;
     public doors: Point[] = [];
 
-    constructor(room: Room, public shift: Point) {
+    constructor(room: Room, public level: number, public shift: Point) {
         this.occupant = null;
         this.type = RoomType.NONE;
         this.danger = false;
@@ -23,6 +23,7 @@ export class RoomProperties {
         this.rd = new Point(room.getRight(), room.getBottom()).plus(shift);
         this.squaredSize = Math.abs(this.rd.x - this.lt.x) * Math.abs(this.rd.y - this.lt.y);
         this.shift = shift;
+        this.level = level;
         this.open = true;
         room.getDoors(this.doorsCallback.bind(this));
     }
