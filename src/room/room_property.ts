@@ -1,4 +1,4 @@
-import {Actor} from "../actor";
+import {Actor} from "../actor/actor";
 import {Room} from "rot-js/lib/map/features";
 import {Point} from "../point";
 import {RoomType} from "./room_decorator";

@@ -1,17 +1,17 @@
 import {Display, KEYS, RNG, Scheduler} from "rot-js/lib/index";
 import Simple from "rot-js/lib/scheduler/simple";
 
-import {Player} from "./player";
+import {Player} from "./actor/player";
 import {Point} from "./point";
 import {Glyph} from "./glyph";
-import {Actor, ActorType} from "./actor";
-import {Pedro} from "./pedro";
+import {Actor, ActorType} from "./actor/actor";
+import {Pedro} from "./actor/pedro";
 import {GameState} from "./game-state";
 import {StatusLine} from "./status-line";
 import {MessageLog} from "./message-log";
 import {InputUtility} from "./input-utility";
 import {Tile, TileType} from "./tile/tile";
-import {TinyPedro} from "./tiny-pedro";
+import {TinyPedro} from "./actor/tiny-pedro";
 import {DisplaySizing} from "./display_sizing";
 import {Multimap} from "./multimap";
 import {Point3D} from "./point3d";
