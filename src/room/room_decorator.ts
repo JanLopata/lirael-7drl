@@ -2,6 +2,7 @@ import {Map} from "../map"
 import {RoomProperties} from "./room_property";
 import {LibraryDecorator} from "./library_decorator";
 import {BedroomDecorator} from "./bedroom_decorator";
+import {DiningRoomDecorator} from "./dining_room_decorator";
 
 
 export enum RoomType {
@@ -41,6 +42,9 @@ export class RoomDecorator {
         }
         if (room.type == RoomType.BEDROOM) {
             new BedroomDecorator(map).decorate(room);
+        }
+        if (room.type == RoomType.DINING_ROOM) {
+            new DiningRoomDecorator(map).decorate(room);
         }
 
     }

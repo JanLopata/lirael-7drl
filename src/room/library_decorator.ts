@@ -2,6 +2,7 @@ import {Map} from "../map"
 import {RoomProperties} from "./room_property";
 import {Point} from "../point";
 import {Bookshelf} from "../tile/bookshelf";
+import {Tile} from "../tile/tile";
 
 export class LibraryDecorator {
 
@@ -30,6 +31,8 @@ export class LibraryDecorator {
                 }
 
                 let target = new Point(i, j).plus(room.lt);
+                if (this.map.getTile(target.x, target.y) == Tile.floor)
+                    continue;
                 if (this.doorNearby(target, room)) {
                     continue
                 }

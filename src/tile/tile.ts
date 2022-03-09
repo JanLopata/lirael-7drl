@@ -9,7 +9,9 @@ export const enum TileType {
     Door,
     Bookshelf,
     Bed,
-    CorridorFloor
+    Chair,
+    Table,
+    CorridorFloor,
 
 }
 
@@ -20,6 +22,9 @@ export class Tile {
     static readonly destroyedBox = new Tile(TileType.DestroyedBox, new Glyph("x", "#555"));
     static readonly warpPoint = new Tile(TileType.WarpPoint, new Glyph("*", "#ff7700"));
     static readonly door = new Tile(TileType.Door, new Glyph("+", "#654321"))
+    static readonly chair = new Tile(TileType.Chair, new Glyph("x", "#7d6c61"))
+    static readonly table = new Tile(TileType.Table, new Glyph("T", "#779bdc"))
+
 
 
     constructor(public readonly type: TileType, public glyph: Glyph) { }
