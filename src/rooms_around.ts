@@ -1,41 +1,57 @@
 import {Map} from "./map"
-import {Tile, TileType} from "./tile";
+import {Tile, TileType} from "./tile/tile";
 import {SpiralPart} from "./spiral_part";
 import Digger from "rot-js/lib/map/digger";
 import {Point} from "./point";
-import {Door} from "./door";
+import {Door} from "./tile/door";
+import {RoomTile} from "./tile/room_tile";
+import {RoomProperties} from "./room/room_property";
+import {RoomDecorator} from "./room/room_decorator";
 
+const roomDebug = false;
 
 export class RoomsAround {
 
     private readonly generatedTiles: { [key: string]: Tile };
     private readonly doorsList: Point[];
+    private readonly roomsWithProperty: RoomProperties[];
 
     private readonly level: number;
+
     private readonly spiralPart: SpiralPart;
     private readonly outsideDiameter: number;
     private readonly width: number;
     private readonly height: number;
     private readonly shift: Point;
+    private readonly decorator: RoomDecorator;
+    private digger: Digger;
 
-    constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number) {
+    constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number, decorator: RoomDecorator) {
         this.level = level;
         this.spiralPart = spiralPart;
-        this.outsideDiameter = outsideDiameter;
         this.doorsList = [];
+        this.roomsWithProperty = [];
         this.generatedTiles = {};
-        this.width = Math.round(1.7 * this.outsideDiameter);
-        this.height = 2 * this.outsideDiameter;
-
-        const shiftX = spiralPart.orientedLeft ? - this.width : 0;
-        this.shift = new Point(shiftX, -this.outsideDiameter);
+        this.decorator = decorator;
+        if (roomDebug) {
+            this.width = 20;
+            this.height = 20;
+            this.shift = new Point(100, 100);
+        } else {
+            this.outsideDiameter = outsideDiameter;
+            this.width = Math.round(1.7 * outsideDiameter);
+            this.height = 2 * this.outsideDiameter;
+            const shiftX = spiralPart.orientedLeft ? -this.width : 0;
+            this.shift = new Point(shiftX, -this.outsideDiameter);
+        }
 
         this.generate();
 
     }
 
     generate(): void {
-        let digger = new Digger(this.width, this.height, {"dugPercentage": 0.4})
+        let digger = new Digger(this.width, this.height,
+            {"dugPercentage": 0.6, "corridorLength": [1, 3], "roomHeight": [4, 9], "roomWidth": [4, 9]})
         digger.create(this.diggerCallback.bind(this));
 
         for (let room of digger.getRooms()) {
@@ -45,9 +61,22 @@ export class RoomsAround {
             room.getDoors(this.doorsCallback.bind(this));
         }
         console.log("created rooms: " + digger.getRooms().length)
+        this.digger = digger;
     }
 
     public imprintToMap(map: Map) {
+
+        for (let room of this.digger.getRooms()) {
+            let props = new RoomProperties(room, this.level, this.shift);
+            let roomTile = new RoomTile(props);
+            this.roomsWithProperty.push(props);
+            for (let i = room._x1; i <= room._x2; i++) {
+                for (let j = room._y1; j <= room._y2; j++) {
+                    if (map.getTile(this.shift.x + i, this.shift.y + j) == null)
+                        map.setTile(i + this.shift.x, j + this.shift.y, roomTile);
+                }
+            }
+        }
 
         for (let generatedTilesKey in this.generatedTiles) {
             let point = this.keyToPoint(generatedTilesKey).plus(this.shift);
@@ -65,6 +94,9 @@ export class RoomsAround {
             }
         }
 
+        for (let room of this.roomsWithProperty) {
+            this.decorator.decorate(room, map);
+        }
     }
 
     private coordinatesToKey(x: number, y: number): string {

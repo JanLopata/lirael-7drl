@@ -1,6 +1,6 @@
 import {Actor} from "./actor";
 import {Multimap} from "./multimap";
-import {WarpTile} from "./warptile";
+import {WarpTile} from "./tile/warptile";
 import {Point3D} from "./point3d";
 
 export class Warper {

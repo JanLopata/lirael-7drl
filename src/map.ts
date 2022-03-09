@@ -1,9 +1,9 @@
 import {RNG} from "rot-js";
 import {Game} from "./game";
-import {Tile, TileType} from "./tile";
+import {Tile, TileType} from "./tile/tile";
 import {Point} from "./point";
 import {DisplaySizing} from "./display_sizing";
-import {Door} from "./door";
+import {Door} from "./tile/door";
 
 export class Map {
     map: { [key: string]: Tile };

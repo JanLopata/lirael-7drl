@@ -10,13 +10,13 @@ import {GameState} from "./game-state";
 import {StatusLine} from "./status-line";
 import {MessageLog} from "./message-log";
 import {InputUtility} from "./input-utility";
-import {Tile, TileType} from "./tile";
+import {Tile, TileType} from "./tile/tile";
 import {TinyPedro} from "./tiny-pedro";
 import {DisplaySizing} from "./display_sizing";
 import {Multimap} from "./multimap";
 import {Point3D} from "./point3d";
 import {Warper} from "./warper";
-import {Door} from "./door";
+import {Door} from "./tile/door";
 
 export class Game {
     private display: Display;
@@ -39,8 +39,8 @@ export class Game {
     private pedroColor: string;
     private foregroundColor = "white";
     private backgroundColor = "black";
-    private maximumBoxes = 10;
-    warper: Warper;
+    private maximumBoxes = 1;
+    public readonly warper: Warper;
 
     constructor() {
         this.gameSize = { width: 75, height: 25 };

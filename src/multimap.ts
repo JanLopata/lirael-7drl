@@ -1,17 +1,20 @@
 import {RNG} from "rot-js";
 import {Map} from "./map"
 import {Game} from "./game";
-import {Tile, TileType} from "./tile";
+import {Tile, TileType} from "./tile/tile";
 import {Point} from "./point";
 import {DisplaySizing} from "./display_sizing";
 import {SpiralPart} from "./spiral_part";
 import {Point3D} from "./point3d";
-import {WarpTile} from "./warptile";
+import {WarpTile} from "./tile/warptile";
 import {RoomsAround} from "./rooms_around";
+import {RoomDecorator} from "./room/room_decorator";
 
 export class Multimap {
     private multimap: { [level: number]: Map }
     private spirals: SpiralPart[];
+    private roomsAround: RoomsAround[];
+    private roomDecorator: RoomDecorator = new RoomDecorator();
 
     constructor(private game: Game) {
         this.multimap = {};
@@ -32,12 +35,15 @@ export class Multimap {
 
     generateLevel(level: number) {
         this.multimap[level] = new Map(this.game);
+
         const left = level % 2 == 0;
         const spiralPart = new SpiralPart(level, 4, 9, left)
         spiralPart.imprintToMap(this.getMap(level));
         this.spirals.push(spiralPart);
-        const roomsAround = new RoomsAround(level, spiralPart, 15);
+
+        const roomsAround = new RoomsAround(level, spiralPart, 15, this.roomDecorator);
         roomsAround.imprintToMap(this.getMap(level));
+        this.roomsAround.push(roomsAround);
     }
 
     connectSpirals() {
