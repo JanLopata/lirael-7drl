@@ -42,6 +42,11 @@ export class Player implements Actor {
             }
 
             if (!this.game.mapIsPassable(this.position.level, newPoint.x, newPoint.y)) {
+                // check for closed doors
+                if (this.game.isDoorOn(new Point3D(this.position.level, newPoint.x, newPoint.y))) {
+                    return this.checkInteraction(new Point3D(this.position.level, newPoint.x, newPoint.y))
+                }
+                // nope - no doors
                 return;
             }
             this.position = new Point3D(this.position.level, newPoint.x, newPoint.y);

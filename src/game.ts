@@ -174,6 +174,11 @@ export class Game {
         }
     }
 
+    isDoorOn(target: Point3D): boolean {
+        let tile = this.multimap.getTile(target.level, target.x, target.y);
+        return tile instanceof Door;
+    }
+
     interact(actor: Actor, target: Point3D): boolean {
 
         let tile = this.multimap.getTile(target.level, target.x, target.y);
