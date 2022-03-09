@@ -17,7 +17,7 @@ export const enum TileType {
 
 export class Tile {
     static readonly floor = new Tile(TileType.Floor, new Glyph("."));
-    static readonly box = new Tile(TileType.Box, new Glyph("#", "#654321"));
+    static readonly box = new Tile(TileType.Box, new Glyph("#", "#99e550"));
     static readonly searchedBox = new Tile(TileType.SearchedBox, new Glyph("#", "#666"));
     static readonly destroyedBox = new Tile(TileType.DestroyedBox, new Glyph("x", "#555"));
     static readonly warpPoint = new Tile(TileType.WarpPoint, new Glyph("*", "#ff7700"));
