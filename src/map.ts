@@ -4,6 +4,7 @@ import {Tile, TileType} from "./tile/tile";
 import {Point} from "./point";
 import {DisplaySizing} from "./display_sizing";
 import {Door} from "./tile/door";
+import {WarpTile} from "./tile/warptile";
 
 export class Map {
     map: { [key: string]: Tile };
@@ -72,7 +73,11 @@ export class Map {
             if (!displaySizing.checkFits(position)) {
                 continue;
             }
-            this.game.draw(position, this.map[key].glyph);
+            let mapElement = this.map[key];
+            if (mapElement instanceof WarpTile) {
+                continue;
+            }
+            this.game.draw(position, mapElement.glyph);
         }
     }
 
