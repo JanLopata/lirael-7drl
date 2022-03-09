@@ -13,7 +13,7 @@ import {RoomDecorator} from "./room/room_decorator";
 export class Multimap {
     private multimap: { [level: number]: Map }
     private spirals: SpiralPart[];
-    private roomsAround: RoomsAround[];
+    private roomsAround: RoomsAround[] = [];
     private roomDecorator: RoomDecorator = new RoomDecorator();
 
     constructor(private game: Game) {
