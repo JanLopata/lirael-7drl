@@ -8,6 +8,7 @@ import {RoomTile} from "./tile/room_tile";
 import {RoomProperties} from "./tile/room_property";
 import {RoomDecorator} from "./room_decorator";
 
+const roomDebug = true;
 
 export class RoomsAround {
 
@@ -16,25 +17,33 @@ export class RoomsAround {
     private readonly roomsWithProperty: RoomProperties[];
 
     private readonly level: number;
+
     private readonly spiralPart: SpiralPart;
     private readonly outsideDiameter: number;
     private readonly width: number;
     private readonly height: number;
     private readonly shift: Point;
+    private readonly decorator: RoomDecorator;
     private digger: Digger;
 
-    constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number) {
+    constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number, decorator: RoomDecorator) {
         this.level = level;
         this.spiralPart = spiralPart;
-        this.outsideDiameter = outsideDiameter;
         this.doorsList = [];
         this.roomsWithProperty = [];
         this.generatedTiles = {};
-        this.width = Math.round(1.7 * this.outsideDiameter);
-
-        this.height = 2 * this.outsideDiameter;
-        const shiftX = spiralPart.orientedLeft ? -this.width : 0;
-        this.shift = new Point(shiftX, -this.outsideDiameter);
+        this.decorator = decorator;
+        if (roomDebug) {
+            this.width = 20;
+            this.height = 20;
+            this.shift = new Point(100, 100);
+        } else {
+            this.outsideDiameter = outsideDiameter;
+            this.width = Math.round(1.7 * outsideDiameter);
+            this.height = 2 * this.outsideDiameter;
+            const shiftX = spiralPart.orientedLeft ? -this.width : 0;
+            this.shift = new Point(shiftX, -this.outsideDiameter);
+        }
 
         this.generate();
 
@@ -85,9 +94,8 @@ export class RoomsAround {
             }
         }
 
-        let roomDecorator = new RoomDecorator(map);
         for (let room of this.roomsWithProperty) {
-            roomDecorator.decorate(room);
+            this.decorator.decorate(room, map);
         }
     }
 

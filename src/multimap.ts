@@ -8,11 +8,13 @@ import {SpiralPart} from "./spiral_part";
 import {Point3D} from "./point3d";
 import {WarpTile} from "./tile/warptile";
 import {RoomsAround} from "./rooms_around";
+import {RoomDecorator} from "./room_decorator";
 
 export class Multimap {
     private multimap: { [level: number]: Map }
     private spirals: SpiralPart[];
     private roomsAround: RoomsAround[];
+    private roomDecorator: RoomDecorator = new RoomDecorator();
 
     constructor(private game: Game) {
         this.multimap = {};
@@ -39,7 +41,7 @@ export class Multimap {
         spiralPart.imprintToMap(this.getMap(level));
         this.spirals.push(spiralPart);
 
-        const roomsAround = new RoomsAround(level, spiralPart, 15);
+        const roomsAround = new RoomsAround(level, spiralPart, 15, this.roomDecorator);
         roomsAround.imprintToMap(this.getMap(level));
         this.roomsAround.push(roomsAround);
     }
