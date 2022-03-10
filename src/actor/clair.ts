@@ -26,7 +26,7 @@ export class Clair extends AIActor {
         // WIP
         let myRoom = this.game.getPositionRoom(this.position);
         if (myRoom == null) {
-            return true;
+            return false;
         }
         if (!myRoom.danger) {
             return false;

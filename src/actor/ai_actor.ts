@@ -68,9 +68,9 @@ export abstract class AIActor implements Actor {
         this.position = nextStep3D;
         this.notMovedCounter = -1;
 
-        // if (this.catchPlayerCheck()) {
-        //     this.game.catchPlayer(this);
-        // }
+        if (this.catchPlayerCheck()) {
+            this.game.catchPlayer(this);
+        }
 
         this.game.warper.tryActorLevelWarp(this);
 
