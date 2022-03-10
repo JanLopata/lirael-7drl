@@ -184,6 +184,11 @@ export class Game {
         return tile instanceof Door;
     }
 
+    isBookshelfOn(target: Point3D): boolean {
+        let tile = this.multimap.getTile(target);
+        return tile instanceof Bookshelf;
+    }
+
     interact(actor: Actor, target: Point3D): boolean {
 
         let tile = this.multimap.getTile(target);
