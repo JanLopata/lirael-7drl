@@ -4,18 +4,15 @@ import {Glyph} from "../glyph";
 import {Point3D} from "../point3d";
 import {AIActor} from "./ai_actor";
 import {Tile, TileType} from "../tile/tile";
-import {RNG} from "rot-js";
-
-const sendingNames = ['Snarky', 'Old timey', 'Magixi', 'Randy', 'Rumbly', 'Pebble', 'Norman']
 
 export class Sending extends AIActor {
 
     name: string;
 
-    constructor(game: Game, position: Point3D) {
+    constructor(game: Game, position: Point3D, name: string) {
         super(game, position, new Glyph("S", "#b700ff", ""));
         this.type = ActorType.Sending;
-        this.name = RNG.getItem(sendingNames);
+        this.name = name;
     }
 
     targetFilter(tile: Tile): boolean {

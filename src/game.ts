@@ -23,6 +23,7 @@ import {RoomType} from "./room/room_decorator";
 import {Clair} from "./actor/clair";
 import {RoomProperties} from "./room/room_property";
 import {ClairSpawnHelper} from "./actor/helpers/clair_spawn_helper";
+import {SendingsSpawnHelper} from "./actor/helpers/sendings_spawn_helper";
 
 export class Game {
     private display: Display;
@@ -374,14 +375,14 @@ export class Game {
     }
 
     private createSendings() {
-        const numberOfSendings = 5;
+        let nameHelper = new SendingsSpawnHelper();
+        const numberOfSendings = nameHelper.maxCount();
         let positions = this.multimap.getRandomTargets(
             tile => (tile instanceof RoomTile && tile.roomProps.type == RoomType.LIBRARY),
             numberOfSendings);
-        for (const item of positions) {
-            this.enemies.push(new Sending(this, item));
+        for (let i = 0; i < positions.length; i++) {
+            this.enemies.push(new Sending(this, positions[i], nameHelper.getOne(i)));
         }
-        return positions;
     }
 
     private createClairs() {
