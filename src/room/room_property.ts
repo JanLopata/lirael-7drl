@@ -2,6 +2,7 @@ import {Actor} from "../actor/actor";
 import {Room} from "rot-js/lib/map/features";
 import {Point} from "../point";
 import {RoomType} from "./room_decorator";
+import {RNG} from "rot-js";
 
 
 export class RoomProperties {
@@ -18,7 +19,7 @@ export class RoomProperties {
     constructor(room: Room, public level: number, public shift: Point) {
         this.occupant = null;
         this.type = RoomType.NONE;
-        this.danger = false;
+        this.danger = RNG.getUniform() > 0.5;
         this.lt = new Point(room.getLeft(), room.getTop()).plus(shift);
         this.rd = new Point(room.getRight(), room.getBottom()).plus(shift);
         this.squaredSize = Math.abs(this.rd.x - this.lt.x) * Math.abs(this.rd.y - this.lt.y);
