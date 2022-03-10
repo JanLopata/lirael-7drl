@@ -7,8 +7,8 @@ export class SendingsSpawnHelper {
     private nameList: string[] = [];
 
     constructor() {
-        for (let name in sendingNames) {
-            this.nameList.push(name);
+        for (let i = 0; i < sendingNames.length; i++) {
+            this.nameList.push(sendingNames[i]);
         }
         RNG.shuffle(this.nameList);
     }

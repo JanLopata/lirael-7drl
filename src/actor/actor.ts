@@ -13,7 +13,8 @@ export interface Actor {
     position: Point3D;
     glyph: Glyph;
     type: ActorType;
-    name: string;
 
     act(): Promise<any>;
+
+    getName(): string;
 }

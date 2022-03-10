@@ -11,12 +11,10 @@ export class TinyPedro implements Actor {
     type: ActorType;
     private target: Point;
     private path: Point[];
-    name: string;
 
     constructor(private game: Game, public position: Point3D) {
         this.glyph = new Glyph("p", "#00f", "");
         this.type = ActorType.TinyPedro;
-        this.name = "Pedro's son"
     }
 
     act(): Promise<any> {
@@ -55,5 +53,9 @@ export class TinyPedro implements Actor {
 
     private pathCallback(x: number, y: number): void {
         this.path.push(new Point(x, y));
+    }
+
+    getName(): string {
+        return "Pedro's son";
     }
 }

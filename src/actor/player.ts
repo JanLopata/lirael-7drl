@@ -7,7 +7,6 @@ import { InputUtility } from "../input-utility";
 import {Point3D} from "../point3d";
 
 export class Player implements Actor {
-    name: string = 'Lirael';
     glyph: Glyph;
     type: ActorType;
     private keyMap: { [key: number]: number }
@@ -37,20 +36,20 @@ export class Player implements Actor {
         if (code in this.keyMap) {
             let diff = DIRS[8][this.keyMap[code]];
             let newPoint = new Point(this.position.x + diff[0], this.position.y + diff[1]);
-
+            let newPoint3d = new Point3D(this.position.level, newPoint.x, newPoint.y);
             if (this.hasModifier(event)) {
-                return this.checkInteraction(new Point3D(this.position.level, newPoint.x, newPoint.y))
+                return this.checkInteraction(newPoint3d)
             }
 
-            if (!this.game.mapIsPassable(this.position.level, newPoint.x, newPoint.y)) {
+            if (!this.game.mapIsPassable(newPoint3d)) {
                 // check for closed doors
-                if (this.game.isDoorOn(new Point3D(this.position.level, newPoint.x, newPoint.y))) {
-                    return this.checkInteraction(new Point3D(this.position.level, newPoint.x, newPoint.y))
+                if (this.game.isDoorOn(newPoint3d)) {
+                    return this.checkInteraction(newPoint3d)
                 }
                 // nope - no doors
                 return;
             }
-            this.position = new Point3D(this.position.level, newPoint.x, newPoint.y);
+            this.position = newPoint3d;
             this.game.warper.tryActorLevelWarp(this);
 
             validInput = true;
@@ -69,6 +68,10 @@ export class Player implements Actor {
 
     checkInteraction(target: Point3D): boolean {
         return this.game.interact(this, target);
+    }
+
+    getName(): string {
+        return "Lirael";
     }
 
 }

@@ -99,8 +99,8 @@ export class Game {
         this.display.drawText(position.x, position.y, text, maxWidth);
     }
 
-    mapIsPassable(level: number, x: number, y: number): boolean {
-        return this.multimap.isPassable(level, x, y);
+    mapIsPassable(point: Point3D): boolean {
+        return this.multimap.isPassable(point);
     }
 
     onLevelPassable(level: number): (x: number, y: number) => boolean {
@@ -163,10 +163,10 @@ export class Game {
                 this.multimap.setTile(level, x, y, Tile.destroyedBox);
                 if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
                     this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-                    this.messageLog.appendText(`Game over - ${actor.name} destroyed the box with the pineapple.`);
+                    this.messageLog.appendText(`Game over - ${actor.getName()} destroyed the box with the pineapple.`);
                     this.gameState.pineappleWasDestroyed = true;
                 } else {
-                    this.messageLog.appendText(`${actor.name} destroyed a box.`);
+                    this.messageLog.appendText(`${actor.getName()} destroyed a box.`);
                 }
                 break;
             case TileType.DestroyedBox:
@@ -202,7 +202,7 @@ export class Game {
 
     catchPlayer(actor: Actor): void {
         this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-        this.messageLog.appendText(`Game over - you were captured by ${actor.name}!`);
+        this.messageLog.appendText(`Game over - you were captured by ${actor.getName()}!`);
         this.gameState.playerWasCaught = true;
     }
 
@@ -381,7 +381,9 @@ export class Game {
             tile => (tile instanceof RoomTile && tile.roomProps.type == RoomType.LIBRARY),
             numberOfSendings);
         for (let i = 0; i < positions.length; i++) {
-            this.enemies.push(new Sending(this, positions[i], nameHelper.getOne(i)));
+            let sending = new Sending(this, positions[i], nameHelper.getOne(i));
+            console.log("Spawned sending " + sending.getName());
+            this.enemies.push(sending);
         }
     }
 

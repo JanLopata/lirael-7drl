@@ -8,7 +8,6 @@ import {Point} from "../point";
 
 export abstract class AIActor implements Actor {
     glyph: Glyph;
-    abstract name: string;
     type: ActorType;
     private target: Point3D;
     private path: Point[];
@@ -21,6 +20,8 @@ export abstract class AIActor implements Actor {
         this.glyph = glyph;
         this.type = ActorType.Clair;
     }
+
+    abstract getName(): string;
 
     act(): Promise<any> {
 
@@ -39,6 +40,17 @@ export abstract class AIActor implements Actor {
         astar.compute(this.position.x, this.position.y, this.pathCallback.bind(this));
         this.path.shift(); // remove actor's position
 
+        if (this.path.length == 1) {
+            // last step
+            let lastStep = this.path[0];
+            let lastStep3d = new Point3D(this.position.level, lastStep.x, lastStep.y);
+            if (!this.game.mapIsPassable(lastStep3d)) {
+                // unreachable last step - remove
+                console.log("removing last unreachable step for " + this.getName());
+                this.path = [];
+            }
+        }
+
         if (this.path.length == 0) {
             // done, or target unreachable - reset actor's target
             this.target = null;
@@ -50,7 +62,7 @@ export abstract class AIActor implements Actor {
         let nextStep = this.path[0];
         let nextStep3D = new Point3D(this.position.level, nextStep.x, nextStep.y);
 
-        if (!this.game.mapIsPassable(this.position.level, nextStep.x, nextStep.y)) {
+        if (!this.game.mapIsPassable(nextStep3D)) {
             // probably doors to unlock
             this.game.interact(this, nextStep3D);
             return Promise.resolve()
@@ -82,7 +94,7 @@ export abstract class AIActor implements Actor {
     private ensureTarget() {
 
         if (this.notMovedCounter > this.nextTargetCounterMax) {
-            console.log(`AI actor has not moved for ${this.notMovedCounter} turns - forcing target change`);
+            console.log(`${this.getName()} has not moved for ${this.notMovedCounter} turns - forcing target change`);
             this.target = this.game.getRandomTarget(this.targetFilter);
         }
 

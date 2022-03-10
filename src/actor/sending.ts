@@ -27,4 +27,8 @@ export class Sending extends AIActor {
         // nothing
     }
 
+    getName(): string {
+        return this.name;
+    }
+
 }

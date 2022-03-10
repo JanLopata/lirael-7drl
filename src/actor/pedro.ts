@@ -34,7 +34,7 @@ export class Pedro implements Actor {
             let nextStep = this.path[0];
             let nextStep3D = new Point3D(this.position.level, nextStep.x, nextStep.y);
 
-            if (!this.game.mapIsPassable(this.position.level, nextStep.x, nextStep.y)) {
+            if (!this.game.mapIsPassable(nextStep3D)) {
                 // probably doors to unlock
                 this.game.interact(this, nextStep3D);
                 return Promise.resolve()
@@ -56,5 +56,9 @@ export class Pedro implements Actor {
 
     private pathCallback(x: number, y: number): void {
         this.path.push(new Point(x, y));
+    }
+
+    getName(): string {
+        return "Pedro";
     }
 }

@@ -7,12 +7,15 @@ import {AIActor} from "./ai_actor";
 
 export class Clair extends AIActor {
     name: string;
-
     constructor(game: Game, position: Point3D, name, public unlockPower) {
         super(game, position, new Glyph("C", "#d6dbff", ""));
         this.type = ActorType.Clair;
         this.name = name;
         this.unlockPower = unlockPower;
+    }
+
+    getName(): string {
+        return this.name;
     }
 
     targetFilter(tile: Tile): boolean {
