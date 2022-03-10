@@ -16,16 +16,20 @@ export const enum TileType {
 }
 
 export class Tile {
-    static readonly floor = new Tile(TileType.Floor, new Glyph("."));
-    static readonly box = new Tile(TileType.Box, new Glyph("#", "#99e550"));
-    static readonly searchedBox = new Tile(TileType.SearchedBox, new Glyph("#", "#666"));
-    static readonly destroyedBox = new Tile(TileType.DestroyedBox, new Glyph("x", "#555"));
-    static readonly warpPoint = new Tile(TileType.WarpPoint, new Glyph("*", "#ff7700"));
-    static readonly door = new Tile(TileType.Door, new Glyph("+", "#847e87"))
-    static readonly chair = new Tile(TileType.Chair, new Glyph("x", "#7d6c61"))
-    static readonly table = new Tile(TileType.Table, new Glyph("T", "#779bdc"))
-    static readonly bookshelf = new Tile(TileType.Bookshelf, new Glyph("#", "#663931"))
+    static readonly floor = new Tile(TileType.Floor, new Glyph("."), true);
+    static readonly box = new Tile(TileType.Box, new Glyph("#", "#99e550"), true);
+    static readonly searchedBox = new Tile(TileType.SearchedBox, new Glyph("#", "#666"), true);
+    static readonly destroyedBox = new Tile(TileType.DestroyedBox, new Glyph("x", "#555"), true);
+    static readonly warpPointTemplate = new Tile(TileType.WarpPoint, new Glyph("*", "#ff7700"), true);
+    static readonly door = new Tile(TileType.Door, new Glyph("+", "#847e87"), false)
+    static readonly chair = new Tile(TileType.Chair, new Glyph("x", "#7d6c61"), false)
+    static readonly table = new Tile(TileType.Table, new Glyph("T", "#779bdc"), false)
+    static readonly bookshelf = new Tile(TileType.Bookshelf, new Glyph("#", "#663931"), false)
 
 
-    constructor(public readonly type: TileType, public glyph: Glyph) { }
+    constructor(public readonly type: TileType, public glyph: Glyph, protected passable: boolean) { }
+
+    isPassable() : boolean {
+        return this.passable;
+    }
 }

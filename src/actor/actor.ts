@@ -15,4 +15,6 @@ export interface Actor {
     type: ActorType;
 
     act(): Promise<any>;
+
+    getName(): string;
 }

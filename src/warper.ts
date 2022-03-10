@@ -9,10 +9,9 @@ export class Warper {
 
     }
 
-
     tryActorLevelWarp(actor: Actor): boolean {
 
-        let tile = this.multimap.getTile(actor.position.level, actor.position.x, actor.position.y);
+        let tile = this.multimap.getTile(actor.position);
         if (tile == null || !(tile instanceof WarpTile)) {
            return false;
         }

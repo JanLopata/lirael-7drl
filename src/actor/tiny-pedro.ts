@@ -34,8 +34,9 @@ export class TinyPedro implements Actor {
         this.path.shift(); // remove tiny Pedros position
 
         if (this.path.length > 0) {
-            if (!this.game.occupiedByEnemy(this.path[0].x, this.path[0].y)) {
-                this.position = new Point3D(this.position.level, this.path[0].x, this.path[0].y);
+            let nextStep3d = new Point3D(this.position.level, this.path[0].x, this.path[0].y);
+            if (!this.game.occupiedByEnemy(nextStep3d)) {
+                this.position = nextStep3d;
                 this.game.warper.tryActorLevelWarp(this);
             }
         }
@@ -52,5 +53,9 @@ export class TinyPedro implements Actor {
 
     private pathCallback(x: number, y: number): void {
         this.path.push(new Point(x, y));
+    }
+
+    getName(): string {
+        return "Pedro's son";
     }
 }

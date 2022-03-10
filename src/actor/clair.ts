@@ -6,10 +6,16 @@ import {Tile, TileType} from "../tile/tile";
 import {AIActor} from "./ai_actor";
 
 export class Clair extends AIActor {
-
-    constructor(game: Game, position: Point3D) {
+    name: string;
+    constructor(game: Game, position: Point3D, name, public unlockPower) {
         super(game, position, new Glyph("C", "#d6dbff", ""));
         this.type = ActorType.Clair;
+        this.name = name;
+        this.unlockPower = unlockPower;
+    }
+
+    getName(): string {
+        return this.name;
     }
 
     targetFilter(tile: Tile): boolean {
@@ -19,6 +25,25 @@ export class Clair extends AIActor {
             return true;
 
         return tile.type == TileType.Bookshelf;
+    }
+
+    catchPlayerCheck(): boolean {
+
+        // WIP
+        let myRoom = this.game.getPositionRoom(this.position);
+        if (myRoom == null) {
+            return false;
+        }
+        if (!myRoom.danger) {
+            return false;
+        }
+        let playerRoom = this.game.getPositionRoom(this.game.getPlayerPosition())
+        // standing in the same room as a player, room marked dangerous
+        return myRoom.equals(playerRoom)
+    }
+
+    playerIsStandingInWayCallback() {
+        this.game.addLogMessage(this.name + " is giving you a stern look - you are standing in her way!");
     }
 
 }

@@ -47,11 +47,7 @@ export class Map {
         if (tile == null)
             return false;
 
-        if (tile instanceof Door) {
-            return tile.isOpen();
-        }
-
-        return true;
+        return tile.isPassable();
     }
 
     isNavigable(x: number, y: number, unlockStrength: number): boolean {
@@ -63,7 +59,7 @@ export class Map {
             return tile.locked <= unlockStrength;
         }
 
-        return true;
+        return tile.isPassable();
     }
 
     draw(playerPosition: Point, displaySizing: DisplaySizing): void {

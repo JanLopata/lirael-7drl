@@ -124,17 +124,13 @@ export class Multimap {
         return this.getMap(level).getTileType(x, y);
     }
 
-    getTile(level: number, x: number, y: number): Tile {
-        return this.getMap(level).getTile(x, y);
+    getTile(point: Point3D): Tile {
+        return this.getMap(point.level).getTile(point.x, point.y);
     }
 
-    isPassable(level: number, x: number, y: number): boolean {
-        let map = this.getMap(level);
-        if (map == null) {
-            console.warn("map is empty for level " + level)
-            return false;
-        }
-        return map.isPassable(x, y);
+    isPassable(point: Point3D): boolean {
+        let map = this.getMap(point.level);
+        return map.isPassable(point.x, point.y);
     }
 
     draw(playerPosition: Point3D, displaySizing: DisplaySizing): void {

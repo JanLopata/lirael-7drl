@@ -21,6 +21,9 @@ import {Sending} from "./actor/sending";
 import {RoomTile} from "./tile/room_tile";
 import {RoomType} from "./room/room_decorator";
 import {Clair} from "./actor/clair";
+import {RoomProperties} from "./room/room_property";
+import {ClairSpawnHelper} from "./actor/helpers/clair_spawn_helper";
+import {SendingsSpawnHelper} from "./actor/helpers/sendings_spawn_helper";
 
 export class Game {
     private display: Display;
@@ -96,8 +99,8 @@ export class Game {
         this.display.drawText(position.x, position.y, text, maxWidth);
     }
 
-    mapIsPassable(level: number, x: number, y: number): boolean {
-        return this.multimap.isPassable(level, x, y);
+    mapIsPassable(point: Point3D): boolean {
+        return this.multimap.isPassable(point);
     }
 
     onLevelPassable(level: number): (x: number, y: number) => boolean {
@@ -114,9 +117,9 @@ export class Game {
         return (x, y) => map.isNavigable(x, y, unlockStrength);
     }
 
-    occupiedByEnemy(x: number, y: number): boolean {
+    occupiedByEnemy(point: Point3D): boolean {
         for (let enemy of this.enemies) {
-            if (enemy.position.x == x && enemy.position.y == y) {
+            if (enemy.position.equals(point)) {
                 return true;
             }
         }
@@ -160,10 +163,10 @@ export class Game {
                 this.multimap.setTile(level, x, y, Tile.destroyedBox);
                 if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
                     this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-                    this.messageLog.appendText(`Game over - ${this.getActorName(actor)} destroyed the box with the pineapple.`);
+                    this.messageLog.appendText(`Game over - ${actor.getName()} destroyed the box with the pineapple.`);
                     this.gameState.pineappleWasDestroyed = true;
                 } else {
-                    this.messageLog.appendText(`${this.getActorName(actor)} destroyed a box.`);
+                    this.messageLog.appendText(`${actor.getName()} destroyed a box.`);
                 }
                 break;
             case TileType.DestroyedBox:
@@ -176,13 +179,13 @@ export class Game {
     }
 
     isDoorOn(target: Point3D): boolean {
-        let tile = this.multimap.getTile(target.level, target.x, target.y);
+        let tile = this.multimap.getTile(target);
         return tile instanceof Door;
     }
 
     interact(actor: Actor, target: Point3D): boolean {
 
-        let tile = this.multimap.getTile(target.level, target.x, target.y);
+        let tile = this.multimap.getTile(target);
         if (tile == null)
             return false;
 
@@ -199,7 +202,7 @@ export class Game {
 
     catchPlayer(actor: Actor): void {
         this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-        this.messageLog.appendText(`Game over - you were captured by ${this.getActorName(actor)}!`);
+        this.messageLog.appendText(`Game over - you were captured by ${actor.getName()}!`);
         this.gameState.playerWasCaught = true;
     }
 
@@ -330,17 +333,16 @@ export class Game {
         }
     }
 
-    private getActorName(actor: Actor): string {
-        switch (actor.type) {
-            case ActorType.Player:
-                return `Player`;
-            case ActorType.Pedro:
-                return `%c{${actor.glyph.foregroundColor}}Pedro%c{}`;
-            case ActorType.TinyPedro:
-                return `%c{${actor.glyph.foregroundColor}}Pedros son%c{}`;
-            default:
-                return "unknown actor";
+    addLogMessage(message: string): void {
+        this.messageLog.appendText(message);
+    }
+
+    getPositionRoom(position: Point3D): RoomProperties {
+        let tile = this.multimap.getTile(position);
+        if (tile instanceof RoomTile) {
+            return tile.roomProps;
         }
+        return null;
     }
 
     private generateBoxes(): void {
@@ -373,25 +375,28 @@ export class Game {
     }
 
     private createSendings() {
-        const numberOfSendings = 5;
+        let nameHelper = new SendingsSpawnHelper();
+        const numberOfSendings = nameHelper.maxCount();
         let positions = this.multimap.getRandomTargets(
             tile => (tile instanceof RoomTile && tile.roomProps.type == RoomType.LIBRARY),
             numberOfSendings);
-        for (const item of positions) {
-            this.enemies.push(new Sending(this, item));
+        for (let i = 0; i < positions.length; i++) {
+            let sending = new Sending(this, positions[i], nameHelper.getOne(i));
+            console.log("Spawned sending " + sending.getName());
+            this.enemies.push(sending);
         }
-        return positions;
     }
 
     private createClairs() {
-        const numberOfClairs = 5;
+        let clairSpawnHelper = new ClairSpawnHelper();
+        const numberOfClairs = clairSpawnHelper.maxClairs();
         let positions = this.multimap.getRandomTargets(
             tile => (tile instanceof RoomTile),
             numberOfClairs);
-        for (const item of positions) {
-            this.enemies.push(new Clair(this, item));
+        for (let i = 0; i < positions.length; i++) {
+            let [name, power] = clairSpawnHelper.getClair(i);
+            this.enemies.push(new Clair(this, positions[i], name, power));
         }
-        return positions;
     }
 
     private resetStatusLine(): void {
