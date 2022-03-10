@@ -15,4 +15,13 @@ export class Sending extends AIActor {
     targetFilter(tile: Tile): boolean {
         return tile.type == TileType.Bookshelf;
     }
+
+    catchPlayerCheck(): boolean {
+        return false;
+    }
+
+    playerIsStandingInWayCallback() {
+        // nothing
+    }
+
 }

@@ -21,6 +21,7 @@ import {Sending} from "./actor/sending";
 import {RoomTile} from "./tile/room_tile";
 import {RoomType} from "./room/room_decorator";
 import {Clair} from "./actor/clair";
+import {RoomProperties} from "./room/room_property";
 
 export class Game {
     private display: Display;
@@ -114,9 +115,9 @@ export class Game {
         return (x, y) => map.isNavigable(x, y, unlockStrength);
     }
 
-    occupiedByEnemy(x: number, y: number): boolean {
+    occupiedByEnemy(point: Point3D): boolean {
         for (let enemy of this.enemies) {
-            if (enemy.position.x == x && enemy.position.y == y) {
+            if (enemy.position.equals(point)) {
                 return true;
             }
         }
@@ -176,13 +177,13 @@ export class Game {
     }
 
     isDoorOn(target: Point3D): boolean {
-        let tile = this.multimap.getTile(target.level, target.x, target.y);
+        let tile = this.multimap.getTile(target);
         return tile instanceof Door;
     }
 
     interact(actor: Actor, target: Point3D): boolean {
 
-        let tile = this.multimap.getTile(target.level, target.x, target.y);
+        let tile = this.multimap.getTile(target);
         if (tile == null)
             return false;
 
@@ -330,6 +331,10 @@ export class Game {
         }
     }
 
+    addLogMessage(message: string): void {
+        this.messageLog.appendText(message);
+    }
+
     private getActorName(actor: Actor): string {
         switch (actor.type) {
             case ActorType.Player:
@@ -341,6 +346,14 @@ export class Game {
             default:
                 return "unknown actor";
         }
+    }
+
+    getPositionRoom(position: Point3D): RoomProperties {
+        let tile = this.multimap.getTile(position);
+        if (tile instanceof RoomTile) {
+            return tile.roomProps;
+        }
+        return null;
     }
 
     private generateBoxes(): void {

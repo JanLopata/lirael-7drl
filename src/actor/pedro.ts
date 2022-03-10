@@ -25,8 +25,8 @@ export class Pedro implements Actor {
         let astar = new Path.AStar(target.x, target.y, this.game.onLevelNavigable(this.position.level, 1), {topology: 4});
 
         this.path = [];
-        astar.compute(this.position.x, this.position.y, this.pathCallback.bind(this));
-        this.path.shift(); // remove Pedros position
+        // astar.compute(this.position.x, this.position.y, this.pathCallback.bind(this));
+        // this.path.shift(); // remove Pedros position
 
         if (this.path.length > 0) {
             let nextStep = this.path[0];
@@ -38,7 +38,7 @@ export class Pedro implements Actor {
                 return Promise.resolve()
             }
 
-            if (!this.game.occupiedByEnemy(nextStep.x, nextStep.y)) {
+            if (!this.game.occupiedByEnemy(nextStep3D)) {
                 this.position = nextStep3D;
             }
         }

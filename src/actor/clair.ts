@@ -21,4 +21,23 @@ export class Clair extends AIActor {
         return tile.type == TileType.Bookshelf;
     }
 
+    catchPlayerCheck(): boolean {
+
+        // WIP
+        let myRoom = this.game.getPositionRoom(this.position);
+        if (myRoom == null) {
+            return true;
+        }
+        if (!myRoom.danger) {
+            return false;
+        }
+        let playerRoom = this.game.getPositionRoom(this.game.getPlayerPosition())
+        // standing in the same room as a player, room marked dangerous
+        return myRoom.equals(playerRoom)
+    }
+
+    playerIsStandingInWayCallback() {
+        this.game.addLogMessage("Clair is giving you a stern look - you are probably standing in her way!");
+    }
+
 }

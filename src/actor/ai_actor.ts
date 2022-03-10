@@ -16,7 +16,7 @@ export abstract class AIActor implements Actor {
     private notMovedCounter = 0;
     private readonly nextTargetCounterMax = 10;
 
-    protected constructor(private game: Game, public position: Point3D, glyph: Glyph) {
+    protected constructor(protected game: Game, public position: Point3D, glyph: Glyph) {
         this.glyph = glyph;
         this.type = ActorType.Clair;
     }
@@ -55,10 +55,22 @@ export abstract class AIActor implements Actor {
             return Promise.resolve()
         }
 
-        if (!this.game.occupiedByEnemy(nextStep.x, nextStep.y)) {
-            this.position = nextStep3D;
-            this.notMovedCounter = -1;
+        if (this.game.occupiedByEnemy(nextStep3D)) {
+            return Promise.resolve();
         }
+
+        if (this.game.getPlayerPosition().equals(nextStep3D)) {
+            this.playerIsStandingInWayCallback();
+            return Promise.resolve();
+        }
+
+        // moving to new position
+        this.position = nextStep3D;
+        this.notMovedCounter = -1;
+
+        // if (this.catchPlayerCheck()) {
+        //     this.game.catchPlayer(this);
+        // }
 
         this.game.warper.tryActorLevelWarp(this);
 
@@ -89,5 +101,8 @@ export abstract class AIActor implements Actor {
 
     abstract targetFilter(tile: Tile): boolean;
 
+    abstract catchPlayerCheck(): boolean;
+
+    abstract playerIsStandingInWayCallback();
 
 }

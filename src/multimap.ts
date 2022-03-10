@@ -124,8 +124,8 @@ export class Multimap {
         return this.getMap(level).getTileType(x, y);
     }
 
-    getTile(level: number, x: number, y: number): Tile {
-        return this.getMap(level).getTile(x, y);
+    getTile(point: Point3D): Tile {
+        return this.getMap(point.level).getTile(point.x, point.y);
     }
 
     isPassable(level: number, x: number, y: number): boolean {
