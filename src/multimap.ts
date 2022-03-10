@@ -14,7 +14,7 @@ export class Multimap {
     private multimap: { [level: number]: Map }
     private spirals: SpiralPart[];
     private roomsAround: RoomsAround[] = [];
-    private roomDecorator: RoomDecorator = new RoomDecorator();
+    private roomDecorator: RoomDecorator;
 
     constructor(private game: Game) {
         this.multimap = {};
@@ -25,6 +25,7 @@ export class Multimap {
     }
 
     generateMultimap(width: number, height: number): void {
+        this.roomDecorator = new RoomDecorator();
         this.multimap = {};
         this.spirals = [];
         this.roomsAround = [];

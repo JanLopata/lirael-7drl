@@ -51,7 +51,7 @@ export class RoomsAround {
 
     generate(): void {
         let digger = new Digger(this.width, this.height,
-            {"dugPercentage": 0.6, "corridorLength": [1, 3], "roomHeight": [4, 9], "roomWidth": [4, 9]})
+            {"dugPercentage": 0.6, "corridorLength": [1, 4], "roomHeight": [3, 9], "roomWidth": [3, 9]})
         digger.create(this.diggerCallback.bind(this));
 
         for (let room of digger.getRooms()) {

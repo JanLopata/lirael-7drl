@@ -20,7 +20,7 @@ function chooseColor(): string {
 export class Bed extends Tile {
 
     constructor() {
-        super(TileType.Bed, new Glyph(glyphChar(), chooseColor(), Tile.box.glyph.backgroundColor));
+        super(TileType.Bed, new Glyph(glyphChar(), chooseColor()));
         this.glyph.character = glyphChar();
     }
 
