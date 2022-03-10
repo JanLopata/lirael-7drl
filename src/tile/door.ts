@@ -11,13 +11,17 @@ function glyphChar(locked: number) {
 export class Door extends Tile {
 
     constructor(public locked: number) {
-        super(Tile.warpPoint.type, new Glyph(glyphChar(locked), Tile.door.glyph.foregroundColor, Tile.door.glyph.backgroundColor));
+        super(Tile.warpPointTemplate.type, new Glyph(glyphChar(locked), Tile.door.glyph.foregroundColor, Tile.door.glyph.backgroundColor), false);
         this.locked = locked;
     }
 
     close(lockStrength: number) {
         this.locked = lockStrength;
         this.glyph.character = glyphChar(this.locked);
+    }
+
+    isPassable(): boolean {
+        return this.isOpen();
     }
 
     isOpen() :boolean {
