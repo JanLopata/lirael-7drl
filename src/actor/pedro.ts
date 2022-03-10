@@ -9,9 +9,11 @@ export class Pedro implements Actor {
     glyph: Glyph;
     type: ActorType;
     private path: Point[];
+    name: string
 
     constructor(private game: Game, public position: Point3D) {
         this.glyph = new Glyph("P", "#f00", "");
+        this.name = 'Pedro';
         this.type = ActorType.Pedro;
     }
 

@@ -8,6 +8,7 @@ import {Point} from "../point";
 
 export abstract class AIActor implements Actor {
     glyph: Glyph;
+    abstract name: string;
     type: ActorType;
     private target: Point3D;
     private path: Point[];

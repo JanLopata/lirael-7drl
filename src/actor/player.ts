@@ -7,6 +7,7 @@ import { InputUtility } from "../input-utility";
 import {Point3D} from "../point3d";
 
 export class Player implements Actor {
+    name: string = 'Lirael';
     glyph: Glyph;
     type: ActorType;
     private keyMap: { [key: number]: number }

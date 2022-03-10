@@ -22,6 +22,7 @@ import {RoomTile} from "./tile/room_tile";
 import {RoomType} from "./room/room_decorator";
 import {Clair} from "./actor/clair";
 import {RoomProperties} from "./room/room_property";
+import {ClairSpawnHelper} from "./actor/helpers/clair_spawn_helper";
 
 export class Game {
     private display: Display;
@@ -161,10 +162,10 @@ export class Game {
                 this.multimap.setTile(level, x, y, Tile.destroyedBox);
                 if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
                     this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-                    this.messageLog.appendText(`Game over - ${this.getActorName(actor)} destroyed the box with the pineapple.`);
+                    this.messageLog.appendText(`Game over - ${actor.name} destroyed the box with the pineapple.`);
                     this.gameState.pineappleWasDestroyed = true;
                 } else {
-                    this.messageLog.appendText(`${this.getActorName(actor)} destroyed a box.`);
+                    this.messageLog.appendText(`${actor.name} destroyed a box.`);
                 }
                 break;
             case TileType.DestroyedBox:
@@ -200,7 +201,7 @@ export class Game {
 
     catchPlayer(actor: Actor): void {
         this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-        this.messageLog.appendText(`Game over - you were captured by ${this.getActorName(actor)}!`);
+        this.messageLog.appendText(`Game over - you were captured by ${actor.name}!`);
         this.gameState.playerWasCaught = true;
     }
 
@@ -335,19 +336,6 @@ export class Game {
         this.messageLog.appendText(message);
     }
 
-    private getActorName(actor: Actor): string {
-        switch (actor.type) {
-            case ActorType.Player:
-                return `Player`;
-            case ActorType.Pedro:
-                return `%c{${actor.glyph.foregroundColor}}Pedro%c{}`;
-            case ActorType.TinyPedro:
-                return `%c{${actor.glyph.foregroundColor}}Pedros son%c{}`;
-            default:
-                return "unknown actor";
-        }
-    }
-
     getPositionRoom(position: Point3D): RoomProperties {
         let tile = this.multimap.getTile(position);
         if (tile instanceof RoomTile) {
@@ -397,14 +385,15 @@ export class Game {
     }
 
     private createClairs() {
-        const numberOfClairs = 5;
+        let clairSpawnHelper = new ClairSpawnHelper();
+        const numberOfClairs = clairSpawnHelper.maxClairs();
         let positions = this.multimap.getRandomTargets(
             tile => (tile instanceof RoomTile),
             numberOfClairs);
-        for (const item of positions) {
-            this.enemies.push(new Clair(this, item));
+        for (let i = 0; i < positions.length; i++) {
+            let [name, power] = clairSpawnHelper.getClair(i);
+            this.enemies.push(new Clair(this, positions[i], name, power));
         }
-        return positions;
     }
 
     private resetStatusLine(): void {
