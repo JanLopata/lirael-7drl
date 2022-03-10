@@ -3,7 +3,7 @@ import {RoomProperties} from "./room_property";
 import {Point} from "../point";
 import {Bed} from "../tile/bed";
 import {RNG} from "rot-js";
-import {Tile} from "../tile/tile";
+import {Bookshelf} from "../tile/bookshelf";
 
 export class BedroomDecorator {
 
@@ -38,7 +38,7 @@ export class BedroomDecorator {
             if (nextDoorNearby && RNG.getUniform() > 0.7) {
                 // place bookshelf
                 console.log(`placing bookshelf to ${snake[i]}`);
-                this.map.setTile(snake[i].x, snake[i].y, Tile.bookshelf);
+                this.map.setTile(snake[i].x, snake[i].y, new Bookshelf(room.danger));
             }
 
         }

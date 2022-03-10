@@ -24,12 +24,13 @@ import {Clair} from "./actor/clair";
 import {RoomProperties} from "./room/room_property";
 import {ClairSpawnHelper} from "./actor/helpers/clair_spawn_helper";
 import {SendingsSpawnHelper} from "./actor/helpers/sendings_spawn_helper";
+import {Bookshelf} from "./tile/bookshelf";
 
 export class Game {
     private display: Display;
     private scheduler: Simple;
     private multimap: Multimap;
-    private statusLine: StatusLine;
+    statusLine: StatusLine;
     private messageLog: MessageLog;
 
     private player: Player;
@@ -196,6 +197,10 @@ export class Game {
                 tile.pryOpen(1);
             }
             return true;
+        }
+
+        if (tile instanceof Bookshelf) {
+            return tile.interactWith(actor, this);
         }
 
     }

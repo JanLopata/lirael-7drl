@@ -4,6 +4,7 @@ import { padRight, padLeft } from "./text-utility";
 
 export class StatusLine {
     turns: number;
+    booksFound: number;
     pineapples: number;
     boxes: number;
     maxBoxes: number;
@@ -26,7 +27,9 @@ export class StatusLine {
     }
 
     draw(): void {
-        let text = `turns: ${padRight(this.turns.toString(), 6)} pineapples: ${padRight(this.pineapples.toString(), 6)} boxes: ${padLeft(this.boxes.toString(), 2)} / ${padLeft(this.maxBoxes.toString(), 2)}`;
+        let text = `turns: ${padRight(this.turns.toString(), 6)}`
+            + `pineapples: ${padRight(this.pineapples.toString(), 6)}`
+            + `boxes: ${padLeft(this.boxes.toString(), 2)} / ${padLeft(this.maxBoxes.toString(), 2)}`;
         this.game.drawText(this.position, text, this.maxWidth);
     }
 }
