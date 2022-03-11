@@ -3,8 +3,6 @@ import {Point3D} from "../point3d";
 
 export const enum ActorType {
     Player,
-    Pedro,
-    TinyPedro,
     Sending,
     Clair
 }

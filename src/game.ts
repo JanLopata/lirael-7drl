@@ -5,26 +5,25 @@ import {Player} from "./actor/player";
 import {Point} from "./point";
 import {Glyph} from "./glyph";
 import {Actor, ActorType} from "./actor/actor";
-import {Pedro} from "./actor/pedro";
 import {GameState} from "./game-state";
 import {StatusLine} from "./status-line";
 import {MessageLog} from "./message-log";
 import {InputUtility} from "./input-utility";
 import {Tile, TileType} from "./tile/tile";
-import {TinyPedro} from "./actor/tiny-pedro";
 import {DisplaySizing} from "./display_sizing";
 import {Multimap} from "./multimap";
 import {Point3D} from "./point3d";
 import {Warper} from "./warper";
 import {Door} from "./tile/door";
 import {Sending} from "./actor/sending";
-import {RoomTile} from "./tile/room_tile";
+import {dangerColor, RoomTile} from "./tile/room_tile";
 import {RoomType} from "./room/room_decorator";
 import {Clair} from "./actor/clair";
 import {RoomProperties} from "./room/room_property";
 import {ClairSpawnHelper} from "./actor/helpers/clair_spawn_helper";
 import {SendingsSpawnHelper} from "./actor/helpers/sendings_spawn_helper";
 import {Bookshelf} from "./tile/bookshelf";
+import {PlayerSpawnHelper} from "./actor/helpers/player_spawn_helper";
 
 export class Game {
     private display: Display;
@@ -34,7 +33,7 @@ export class Game {
     private messageLog: MessageLog;
 
     private player: Player;
-    private enemies: Actor[];
+    private npcList: Actor[];
 
     private gameSize: { width: number, height: number };
     private displaySizing: DisplaySizing
@@ -45,7 +44,6 @@ export class Game {
     private gameState: GameState;
 
     private pineapplePoint: Point3D;
-    private pedroColor: string;
     private foregroundColor = "white";
     private backgroundColor = "black";
     private maximumBoxes = 10;
@@ -73,7 +71,6 @@ export class Game {
         this.multimap = new Multimap(this);
         this.statusLine = new StatusLine(this, this.statusLinePosition, this.gameSize.width, { maxBoxes: this.maximumBoxes });
         this.messageLog = new MessageLog(this, this.actionLogPosition, this.gameSize.width, this.textLines);
-        this.pedroColor = new Pedro(this, new Point3D(0, 0, 0)).glyph.foregroundColor;
         this.warper = new Warper(this.multimap);
 
         this.initializeGame();
@@ -119,7 +116,7 @@ export class Game {
     }
 
     occupiedByEnemy(point: Point3D): boolean {
-        for (let enemy of this.enemies) {
+        for (let enemy of this.npcList) {
             if (enemy.position.equals(point)) {
                 return true;
             }
@@ -242,7 +239,7 @@ export class Game {
         this.createBeings();
         this.scheduler = new Scheduler.Simple();
         this.scheduler.add(this.player, true);
-        for (let enemy of this.enemies) {
+        for (let enemy of this.npcList) {
             this.scheduler.add(enemy, true);
         }
 
@@ -292,7 +289,7 @@ export class Game {
         this.statusLine.draw();
         this.messageLog.draw();
         this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, this.player.position.toPoint(), this.player.glyph);
-        for (let enemy of this.enemies) {
+        for (let enemy of this.npcList) {
             if (levelsToShow.indexOf(enemy.position.level) >= 0) {
                 this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, enemy.position.toPoint(), enemy.glyph);
             }
@@ -331,11 +328,15 @@ export class Game {
     }
 
     private writeHelpMessage(): void {
+
+        let dummyClair = new Clair(this, new Point3D(0, 0, 0), "Dummy", 0);
+        let bookshelf = new Bookshelf(false);
+
         let helpMessage = [
-            `Find the pineapple in one of the %c{${Tile.box.glyph.foregroundColor}}boxes%c{}.`,
-            `Move with numpad, search %c{${Tile.box.glyph.foregroundColor}}box%c{} with 'spacebar' or 'return'.`,
+            `Find some interesting books in library %c{${bookshelf.glyph.foregroundColor}}bookshelves%c{}.`,
+            `Move with numpad, search %c{${bookshelf.glyph.foregroundColor}}bookshelf%c{} by walking into them'.`,
             `Interact with doors with CTRL + numpad, or ALT + numpad key`,
-            `Watch out for %c{${this.pedroColor}}Pedro%c{}!`
+            `Watch out for %c{${dummyClair.glyph.foregroundColor}}Clair%c{} on %c{${dangerColor}}restricted areas%c{}!`
         ];
 
         for (let index = helpMessage.length - 1; index >= 0; --index) {
@@ -364,24 +365,16 @@ export class Game {
     }
 
     private createBeings(): void {
-        let numberOfEnemies = 1 + Math.floor(this.statusLine.pineapples / 3.0);
-        this.enemies = [];
-        let positions = this.multimap.getRandomTilePositions(TileType.Floor, 1 + numberOfEnemies);
-        this.player = new Player(this, positions.splice(0, 1)[0]);
-        for (let position of positions) {
-            if (this.statusLine.pineapples < 1 || RNG.getUniform() < 0.5) {
-                this.enemies.push(new Pedro(this, position));
-            } else {
-                this.enemies.push(new TinyPedro(this, position));
-            }
-        }
-
+        this.npcList = [];
+        this.spawnPlayer();
         this.createSendings();
         this.createClairs();
+    }
 
-        // console.log(this.enemies)
-        console.log(positions)
-        console.log(this.player.position)
+    private spawnPlayer() {
+        let spawnHelper = new PlayerSpawnHelper(this);
+        let position = spawnHelper.getPlayerSpawnPoint();
+        this.player = new Player(this, position);
     }
 
     private createSendings() {
@@ -392,8 +385,7 @@ export class Game {
             numberOfSendings);
         for (let i = 0; i < positions.length; i++) {
             let sending = new Sending(this, positions[i], nameHelper.getOne(i));
-            console.log("Spawned sending " + sending.getName());
-            this.enemies.push(sending);
+            this.npcList.push(sending);
         }
     }
 
@@ -405,7 +397,7 @@ export class Game {
             numberOfClairs);
         for (let i = 0; i < positions.length; i++) {
             let [name, power] = clairSpawnHelper.getClair(i);
-            this.enemies.push(new Clair(this, positions[i], name, power));
+            this.npcList.push(new Clair(this, positions[i], name, power));
         }
     }
 
