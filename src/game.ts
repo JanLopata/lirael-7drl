@@ -107,12 +107,21 @@ export class Game {
     }
 
     occupiedByEnemy(point: Point3D): boolean {
-        for (let enemy of this.npcList) {
-            if (enemy.position.equals(point)) {
+        for (let npc of this.npcList) {
+            if (npc.position.equals(point)) {
                 return true;
             }
         }
         return false;
+    }
+
+    getNpcOn(point: Point3D): Actor {
+        for (let npc of this.npcList) {
+            if (npc.position.equals(point)) {
+                return npc;
+            }
+        }
+        return null;
     }
 
     getPlayerPosition(): Point3D {

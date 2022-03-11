@@ -5,6 +5,9 @@ import { Point } from "../point";
 import { Glyph } from "../glyph";
 import { InputUtility } from "../input-utility";
 import {Point3D} from "../point3d";
+import {KirrithPrimitive} from "./kirrithPrimitive";
+import {Clair} from "./clair";
+import {Sending} from "./sending";
 
 export class Player implements Actor {
     glyph: Glyph;
@@ -44,6 +47,12 @@ export class Player implements Actor {
             if (!this.game.mapIsPassable(newPoint3d)) {
                 return this.checkInteraction(newPoint3d);
             }
+
+            const npcInWay = this.game.getNpcOn(newPoint3d);
+            if (npcInWay != null) {
+                return this.interactWith(npcInWay);
+            }
+
             this.position = newPoint3d;
             this.game.warper.tryActorLevelWarp(this);
 
@@ -71,6 +80,25 @@ export class Player implements Actor {
 
     getUnlockPower(): number {
         return 2;
+    }
+
+    private interactWith(npcInWay: Actor) {
+        if (npcInWay instanceof KirrithPrimitive) {
+            this.game.addLogMessage(
+                `There is no way to reasonably talk with %c{${npcInWay.glyph.foregroundColor}}${npcInWay.getName()}%c{}!`);
+            return true;
+        }
+        if (npcInWay instanceof Clair) {
+            this.game.addLogMessage(
+                `You bump into %c{${npcInWay.glyph.foregroundColor}}${npcInWay.getName()}%c{}. Rude!`);
+            return true;
+        }
+        if (npcInWay instanceof Sending) {
+            this.game.addLogMessage(
+                `You say Hi! to %c{${npcInWay.glyph.foregroundColor}}${npcInWay.getName()}%c{}.`);
+            return true;
+        }
+        return false;
     }
 
 }
