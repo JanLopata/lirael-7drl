@@ -46,7 +46,7 @@ export class Game {
     private pineapplePoint: Point3D;
     private foregroundColor = "white";
     private backgroundColor = "black";
-    private maximumBoxes = 10;
+    private maximumTurns = 360;
     public readonly warper: Warper;
 
     constructor() {
@@ -69,7 +69,7 @@ export class Game {
 
         this.gameState = new GameState();
         this.multimap = new Multimap(this);
-        this.statusLine = new StatusLine(this, this.statusLinePosition, this.gameSize.width, { maxBoxes: this.maximumBoxes });
+        this.statusLine = new StatusLine(this, this.statusLinePosition, this.gameSize.width, { maxBoxes: this.maximumTurns });
         this.messageLog = new MessageLog(this, this.actionLogPosition, this.gameSize.width, this.textLines);
         this.warper = new Warper(this.multimap);
 
@@ -101,15 +101,6 @@ export class Game {
         return this.multimap.isPassable(point);
     }
 
-    onLevelPassable(level: number): (x: number, y: number) => boolean {
-        let map = this.multimap.getMap(level);
-        if (map == null) {
-            console.warn("no map found for level " + level)
-            return (a, b) => false;
-        }
-        return (x, y) => map.isPassable(x, y);
-    }
-
     onLevelNavigable(level: number, unlockStrength: number): (x: number, y: number) => boolean {
         let map = this.multimap.getMap(level);
         return (x, y) => map.isNavigable(x, y, unlockStrength);
@@ -132,7 +123,7 @@ export class Game {
         switch (this.multimap.getTileType(level, x, y)) {
             case Tile.box.type:
                 this.multimap.setTile(level, x, y, Tile.searchedBox);
-                this.statusLine.boxes += 1;
+                this.statusLine.turns += 1;
                 if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
                     this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
                     this.messageLog.appendText("Hooray! You found a pineapple.");
@@ -154,37 +145,7 @@ export class Game {
         }
     }
 
-    destroyBox(actor: Actor, level: number, x: number, y: number): void {
-        switch (this.multimap.getTileType(level, x, y)) {
-            case TileType.Box:
-            case TileType.SearchedBox:
-                this.multimap.setTile(level, x, y, Tile.destroyedBox);
-                if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
-                    this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-                    this.messageLog.appendText(`Game over - ${actor.getName()} destroyed the box with the pineapple.`);
-                    this.gameState.pineappleWasDestroyed = true;
-                } else {
-                    this.messageLog.appendText(`${actor.getName()} destroyed a box.`);
-                }
-                break;
-            case TileType.DestroyedBox:
-                this.messageLog.appendText("This box is already destroyed.");
-                break;
-            default:
-                this.messageLog.appendText("There is no box here!");
-                break;
-        }
-    }
 
-    isDoorOn(target: Point3D): boolean {
-        let tile = this.multimap.getTile(target);
-        return tile instanceof Door;
-    }
-
-    isBookshelfOn(target: Point3D): boolean {
-        let tile = this.multimap.getTile(target);
-        return tile instanceof Bookshelf;
-    }
 
     interact(actor: Actor, target: Point3D): boolean {
 
@@ -217,12 +178,11 @@ export class Game {
             this.resetStatusLine();
             this.writeHelpMessage();
         } else {
-            this.statusLine.boxes = 0;
+            this.statusLine.turns = 0;
         }
         this.gameState.reset();
 
         this.multimap.generateMultimap(this.mapSize.width, this.mapSize.height);
-        this.generateBoxes();
 
         this.createBeings();
         this.scheduler = new Scheduler.Simple();
@@ -248,7 +208,7 @@ export class Game {
                 this.statusLine.turns += 1;
             }
             if (this.gameState.foundPineapple) {
-                this.statusLine.pineapples += 1;
+                this.statusLine.night += 1;
             }
 
             this.drawPanel();
@@ -344,14 +304,6 @@ export class Game {
         return null;
     }
 
-    private generateBoxes(): void {
-        let positions = this.multimap.getRandomTilePositions(TileType.Floor, this.maximumBoxes);
-        for (let position of positions) {
-            this.multimap.setTile(position.level, position.x, position.y, Tile.box);
-        }
-        this.pineapplePoint = positions[0];
-    }
-
     private createBeings(): void {
         this.npcList = [];
         this.spawnPlayer();
@@ -398,7 +350,7 @@ export class Game {
 
     private resetStatusLine(): void {
         this.statusLine.reset();
-        this.statusLine.maxBoxes = this.maximumBoxes;
+        this.statusLine.turnsMax = this.maximumTurns;
     }
 
     sameLevelPointOrNull(level: number, point: Point3D): Point {
