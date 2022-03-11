@@ -35,7 +35,7 @@ export class BedroomDecorator {
                 console.log(`could not place bed to ${snake[i]}`);
             }
 
-            if (nextDoorNearby && RNG.getUniform() > 0.7) {
+            if (!nextDoorNearby && RNG.getUniform() > 0.7) {
                 // place bookshelf
                 console.log(`placing bookshelf to ${snake[i]}`);
                 this.map.setTile(snake[i].x, snake[i].y, new Bookshelf(room.danger));

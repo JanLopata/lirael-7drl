@@ -336,7 +336,7 @@ export class Game {
             `Find some interesting books in library %c{${bookshelf.glyph.foregroundColor}}bookshelves%c{}.`,
             `Move with numpad, search %c{${bookshelf.glyph.foregroundColor}}bookshelf%c{} by walking into them'.`,
             `Interact with doors with CTRL + numpad, or ALT + numpad key`,
-            `Watch out for %c{${dummyClair.glyph.foregroundColor}}Clair%c{} on %c{${dangerColor}}restricted areas%c{}!`
+            `Watch out for %c{${dummyClair.glyph.foregroundColor}}Clairs%c{} on %c{${dangerColor}}restricted areas%c{}!`
         ];
 
         for (let index = helpMessage.length - 1; index >= 0; --index) {
