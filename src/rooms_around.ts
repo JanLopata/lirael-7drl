@@ -6,7 +6,8 @@ import {Point} from "./point";
 import {Door} from "./tile/door";
 import {RoomTile} from "./tile/room_tile";
 import {RoomProperties} from "./room/room_property";
-import {RoomDecorator} from "./room/room_decorator";
+import {RoomDecorator, RoomType} from "./room/room_decorator";
+import {Clair} from "./actor/clair";
 
 const roomDebug = false;
 
@@ -96,6 +97,17 @@ export class RoomsAround {
 
         for (let room of this.roomsWithProperty) {
             this.decorator.decorate(room, map);
+        }
+    }
+
+    assignBedrooms(clairsList: Clair[]) {
+
+        for (let room of this.roomsWithProperty) {
+            if (clairsList.length == 0)
+                return;
+            if (room.type != RoomType.BEDROOM)
+                continue;
+            room.occupant = clairsList.pop();
         }
     }
 

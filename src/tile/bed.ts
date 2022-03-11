@@ -47,7 +47,7 @@ export class Bed extends Tile {
             }
 
             game.addLogMessage(`You are inspecting ` +
-                `%c{${this.room.occupant.glyph.foregroundColor}${this.room.occupant.getName()}'s %c{} bed. Rude!`);
+                `%c{${this.room.occupant.glyph.foregroundColor}}${this.room.occupant.getName()}'s%c{} bed. Rude!`);
             return true;
 
         }

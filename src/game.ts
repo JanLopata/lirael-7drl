@@ -227,8 +227,8 @@ export class Game {
         this.createBeings();
         this.scheduler = new Scheduler.Simple();
         this.scheduler.add(this.player, true);
-        for (let enemy of this.npcList) {
-            this.scheduler.add(enemy, true);
+        for (let npc of this.npcList) {
+            this.scheduler.add(npc, true);
         }
 
         this.drawPanel();
@@ -356,7 +356,8 @@ export class Game {
         this.npcList = [];
         this.spawnPlayer();
         this.createSendings();
-        this.createClairs();
+        let clairs = this.createClairs();
+        this.multimap.assignBedrooms(clairs);
     }
 
     private spawnPlayer() {
@@ -377,7 +378,9 @@ export class Game {
         }
     }
 
-    private createClairs() {
+    private createClairs() : Clair[] {
+
+        let clairsList: Clair[] = [];
         let clairSpawnHelper = new ClairSpawnHelper();
         const numberOfClairs = clairSpawnHelper.maxClairs();
         let positions = this.multimap.getRandomTargets(
@@ -385,8 +388,11 @@ export class Game {
             numberOfClairs);
         for (let i = 0; i < positions.length; i++) {
             let [name, power] = clairSpawnHelper.getClair(i);
-            this.npcList.push(new Clair(this, positions[i], name, power));
+            let clair = new Clair(this, positions[i], name, power);
+            clairsList.push(clair);
+            this.npcList.push(clair);
         }
+        return clairsList;
     }
 
     private resetStatusLine(): void {

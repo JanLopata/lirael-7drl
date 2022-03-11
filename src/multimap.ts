@@ -9,6 +9,7 @@ import {Point3D} from "./point3d";
 import {WarpTile} from "./tile/warptile";
 import {RoomsAround} from "./rooms_around";
 import {RoomDecorator} from "./room/room_decorator";
+import {Clair} from "./actor/clair";
 
 export class Multimap {
     private multimap: { [level: number]: Map }
@@ -133,16 +134,9 @@ export class Multimap {
         return map.isPassable(point.x, point.y);
     }
 
-    draw(playerPosition: Point3D, displaySizing: DisplaySizing): void {
-        const origin = playerPosition.toPoint().reverse().plus(displaySizing.center)
-        let map = this.getMap(playerPosition.level);
-
-        for (let key in map) {
-            let position = Multimap.keyToPoint(key).plus(origin);
-            if (!displaySizing.checkFits(position)) {
-                continue;
-            }
-            this.game.draw(position, map[key].glyph);
+    assignBedrooms(clairs: Clair[]) {
+        for (let i = this.roomsAround.length - 1; i >= 0; i--) {
+            this.roomsAround[i].assignBedrooms(clairs);
         }
     }
 
