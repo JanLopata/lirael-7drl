@@ -70,6 +70,7 @@ export class RoomsAround {
         for (let room of this.digger.getRooms()) {
             let props = new RoomProperties(room, this.level, this.shift);
             let roomTile = new RoomTile(props);
+            props.typicalRoomTile = roomTile;
             this.roomsWithProperty.push(props);
             for (let i = room._x1; i <= room._x2; i++) {
                 for (let j = room._y1; j <= room._y2; j++) {

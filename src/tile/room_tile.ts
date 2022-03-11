@@ -20,8 +20,13 @@ export class RoomTile extends Tile {
     public roomProps: RoomProperties;
 
     constructor(roomProperties: RoomProperties) {
-        super(Tile.floor.type, new Glyph(RNG.getItem(chars), getDangerColor(roomProperties, Tile.floor.glyph.foregroundColor)), true);
+        super(Tile.floor.type, new Glyph(RNG.getItem(chars)), true);
         this.roomProps = roomProperties;
+        this.refreshDangerColor();
+    }
+
+    refreshDangerColor() {
+        this.glyph.foregroundColor = getDangerColor(this.roomProps, Tile.floor.glyph.foregroundColor);
     }
 
 }

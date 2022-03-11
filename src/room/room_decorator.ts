@@ -3,6 +3,7 @@ import {RoomProperties} from "./room_property";
 import {LibraryDecorator} from "./library_decorator";
 import {BedroomDecorator} from "./bedroom_decorator";
 import {DiningRoomDecorator} from "./dining_room_decorator";
+import {RNG} from "rot-js";
 
 
 export enum RoomType {
@@ -20,7 +21,7 @@ export class RoomDecorator {
     public decorate(room: RoomProperties, map: Map) {
 
         if (room.type == RoomType.NONE) {
-            this.chooseAndAssignType(room, map);
+            this.chooseAndAssignType(room);
         }
         if (room.type != RoomType.NONE) {
             this.decorateByType(map, room);
@@ -49,17 +50,27 @@ export class RoomDecorator {
 
     }
 
-    private chooseAndAssignType(room: RoomProperties, map: Map): boolean {
+    private chooseAndAssignType(room: RoomProperties): boolean {
 
         if (room.squaredSize < 15) {
-            return this.assignType( room, RoomType.BEDROOM);
+            if (this.assignType(room, RoomType.BEDROOM) ) {
+                room.danger = true;
+                room.typicalRoomTile.refreshDangerColor();
+                return true;
+            }
+            return false;
         }
 
-        if (room.squaredSize >= 30) {
-            return this.assignType( room, RoomType.DINING_ROOM);
+        if (room.squaredSize >= 35) {
+            return this.assignType(room, RoomType.DINING_ROOM);
         }
 
-        return this.assignType( room, RoomType.LIBRARY);
+        if (this.assignType(room, RoomType.LIBRARY)) {
+            room.danger = RNG.getUniform() > 0.6;
+            room.typicalRoomTile.refreshDangerColor();
+            return true;
+        }
+        return false;
 
     }
 
