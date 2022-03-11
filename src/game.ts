@@ -355,6 +355,7 @@ export class Game {
     private createBeings(): void {
         this.npcList = [];
         this.spawnPlayer();
+        this.multimap.assignBedrooms([this.player])
         this.createSendings();
         let clairs = this.createClairs();
         this.multimap.assignBedrooms(clairs);

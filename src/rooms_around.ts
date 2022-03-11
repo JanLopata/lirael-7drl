@@ -7,7 +7,8 @@ import {Door} from "./tile/door";
 import {RoomTile} from "./tile/room_tile";
 import {RoomProperties} from "./room/room_property";
 import {RoomDecorator, RoomType} from "./room/room_decorator";
-import {Clair} from "./actor/clair";
+import {Actor} from "./actor/actor";
+import {Player} from "./actor/player";
 
 const roomDebug = false;
 
@@ -101,14 +102,19 @@ export class RoomsAround {
         }
     }
 
-    assignBedrooms(clairsList: Clair[]) {
+    assignBedrooms(actorList: Actor[]) {
 
         for (let room of this.roomsWithProperty) {
-            if (clairsList.length == 0)
+            if (actorList.length == 0)
                 return;
-            if (room.type != RoomType.BEDROOM)
+            if (room.type != RoomType.BEDROOM || room.occupant != null)
                 continue;
-            room.occupant = clairsList.pop();
+            room.occupant = actorList.pop();
+            if (room.occupant instanceof Player) {
+                // remove danger
+                room.danger = false;
+                room.typicalRoomTile.refreshDangerColor();
+            }
         }
     }
 
