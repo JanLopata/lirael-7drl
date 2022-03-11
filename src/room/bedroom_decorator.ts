@@ -26,7 +26,7 @@ export class BedroomDecorator {
             if (!(bedPlaced || doorNearby || nextDoorNearby)) {
                 // place bed
                 console.log(`placing bed to ${snake[i]}`);
-                let bedTile = new Bed();
+                let bedTile = new Bed(room);
                 this.map.setTile(snake[i - 1].x, snake[i - 1].y, bedTile);
                 this.map.setTile(snake[i].x, snake[i].y, bedTile);
                 bedPlaced = true;

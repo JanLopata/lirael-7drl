@@ -11,7 +11,6 @@ export abstract class AIActor implements Actor {
     type: ActorType;
     private target: Point3D;
     private path: Point[];
-    private unlockStrength = 2;
     private nextTargetCounter = 0;
     private notMovedCounter = 0;
     private readonly nextTargetCounterMax = 10;
@@ -34,7 +33,7 @@ export abstract class AIActor implements Actor {
             return Promise.resolve();
         }
 
-        let astar = new Path.AStar(pathTarget.x, pathTarget.y, this.game.onLevelNavigable(this.position.level, this.unlockStrength), {topology: 8});
+        let astar = new Path.AStar(pathTarget.x, pathTarget.y, this.game.onLevelNavigable(this.position.level, this.getUnlockPower()), {topology: 8});
 
         this.path = [];
         astar.compute(this.position.x, this.position.y, this.pathCallback.bind(this));
@@ -117,5 +116,7 @@ export abstract class AIActor implements Actor {
     abstract catchPlayerCheck(): boolean;
 
     abstract playerIsStandingInWayCallback();
+
+    abstract getUnlockPower(): number;
 
 }

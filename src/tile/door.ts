@@ -1,5 +1,7 @@
 import {Tile} from "./tile";
 import {Glyph} from "../glyph";
+import {Actor} from "../actor/actor";
+import {Game} from "../game";
 
 function glyphChar(locked: number) {
     if (locked < 1)
@@ -22,6 +24,17 @@ export class Door extends Tile {
 
     isPassable(): boolean {
         return this.isOpen();
+    }
+
+    interactWith(actor: Actor, game: Game): boolean {
+
+        if (this.isOpen()) {
+            this.close(1);
+        } else {
+            this.pryOpen(1);
+        }
+        return true;
+
     }
 
     isOpen() :boolean {

@@ -15,4 +15,5 @@ export interface Actor {
     act(): Promise<any>;
 
     getName(): string;
+    getUnlockPower(): number;
 }

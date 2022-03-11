@@ -47,4 +47,8 @@ export class Clair extends AIActor {
         this.game.addLogMessage(this.name + " is giving you a stern look - you are standing in her way!");
     }
 
+    getUnlockPower(): number {
+        return this.unlockPower;
+    }
+
 }

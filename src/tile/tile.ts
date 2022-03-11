@@ -1,4 +1,6 @@
 import { Glyph } from "../glyph";
+import {Actor} from "../actor/actor";
+import {Game} from "../game";
 
 export const enum TileType {
     Floor,
@@ -29,5 +31,9 @@ export class Tile {
 
     isPassable() : boolean {
         return this.passable;
+    }
+
+    interactWith(actor: Actor, game: Game): boolean {
+        return false;
     }
 }

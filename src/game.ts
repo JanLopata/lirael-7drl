@@ -192,19 +192,7 @@ export class Game {
         if (tile == null)
             return false;
 
-        if (tile instanceof Door) {
-            if (tile.isOpen()) {
-                tile.close(1);
-            } else {
-                tile.pryOpen(1);
-            }
-            return true;
-        }
-
-        if (tile instanceof Bookshelf) {
-            return tile.interactWith(actor, this);
-        }
-
+        return tile.interactWith(actor, this);
     }
 
     catchPlayer(actor: Actor): void {

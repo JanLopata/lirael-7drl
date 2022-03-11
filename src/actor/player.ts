@@ -42,15 +42,7 @@ export class Player implements Actor {
             }
 
             if (!this.game.mapIsPassable(newPoint3d)) {
-                // check for closed doors
-                if (this.game.isDoorOn(newPoint3d)) {
-                    return this.checkInteraction(newPoint3d);
-                }
-                // check for bookshelves
-                if (this.game.isBookshelfOn(newPoint3d)) {
-                    return this.checkInteraction(newPoint3d);
-                }
-                return;
+                return this.checkInteraction(newPoint3d);
             }
             this.position = newPoint3d;
             this.game.warper.tryActorLevelWarp(this);
@@ -75,6 +67,10 @@ export class Player implements Actor {
 
     getName(): string {
         return "Lirael";
+    }
+
+    getUnlockPower(): number {
+        return 2;
     }
 
 }
