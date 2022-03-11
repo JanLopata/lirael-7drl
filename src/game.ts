@@ -14,7 +14,6 @@ import {DisplaySizing} from "./display_sizing";
 import {Multimap} from "./multimap";
 import {Point3D} from "./point3d";
 import {Warper} from "./warper";
-import {Door} from "./tile/door";
 import {Sending} from "./actor/sending";
 import {dangerColor, RoomTile} from "./tile/room_tile";
 import {RoomType} from "./room/room_decorator";
@@ -24,6 +23,7 @@ import {ClairSpawnHelper} from "./actor/helpers/clair_spawn_helper";
 import {SendingsSpawnHelper} from "./actor/helpers/sendings_spawn_helper";
 import {Bookshelf} from "./tile/bookshelf";
 import {PlayerSpawnHelper} from "./actor/helpers/player_spawn_helper";
+import {KirrithPrimitive} from "./actor/kirrithPrimitive";
 
 export class Game {
     private display: Display;
@@ -307,6 +307,7 @@ export class Game {
     private createBeings(): void {
         this.npcList = [];
         this.spawnPlayer();
+        this.spawnKirrith();
         this.createSendings();
         let clairs = this.createClairs();
         this.multimap.assignBedrooms(clairs);
@@ -318,6 +319,15 @@ export class Game {
         let spawnHelper = new PlayerSpawnHelper(this);
         this.player.position = spawnHelper.getPlayerSpawnPoint();
     }
+
+    private spawnKirrith() {
+        let kirrith = new KirrithPrimitive(this, null);
+        this.multimap.assignBedrooms([kirrith]);
+        kirrith.position = this.getRandomTarget(
+            tile => (tile instanceof RoomTile) && tile.roomProps.occupant == kirrith);
+        this.npcList.push(kirrith);
+    }
+
 
     private createSendings() {
         let nameHelper = new SendingsSpawnHelper();
@@ -351,13 +361,6 @@ export class Game {
     private resetStatusLine(): void {
         this.statusLine.reset();
         this.statusLine.turnsMax = this.maximumTurns;
-    }
-
-    sameLevelPointOrNull(level: number, point: Point3D): Point {
-        if (point.level != level) {
-            return null;
-        }
-        return point.toPoint();
     }
 
 }

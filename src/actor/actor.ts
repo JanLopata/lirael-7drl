@@ -4,7 +4,8 @@ import {Point3D} from "../point3d";
 export const enum ActorType {
     Player,
     Sending,
-    Clair
+    Clair,
+    Kirrith,
 }
 
 export interface Actor {
