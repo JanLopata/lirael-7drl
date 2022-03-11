@@ -44,9 +44,12 @@ export class Player implements Actor {
             if (!this.game.mapIsPassable(newPoint3d)) {
                 // check for closed doors
                 if (this.game.isDoorOn(newPoint3d)) {
-                    return this.checkInteraction(newPoint3d)
+                    return this.checkInteraction(newPoint3d);
                 }
-                // nope - no doors
+                // check for bookshelves
+                if (this.game.isBookshelfOn(newPoint3d)) {
+                    return this.checkInteraction(newPoint3d);
+                }
                 return;
             }
             this.position = newPoint3d;
