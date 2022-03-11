@@ -1,4 +1,4 @@
-import {Display, KEYS, RNG, Scheduler} from "rot-js/lib/index";
+import {Display, KEYS, Scheduler} from "rot-js/lib/index";
 import Simple from "rot-js/lib/scheduler/simple";
 
 import {Player} from "./actor/player";
@@ -355,16 +355,16 @@ export class Game {
     private createBeings(): void {
         this.npcList = [];
         this.spawnPlayer();
-        this.multimap.assignBedrooms([this.player])
         this.createSendings();
         let clairs = this.createClairs();
         this.multimap.assignBedrooms(clairs);
     }
 
     private spawnPlayer() {
+        this.player = new Player(this, null);
+        this.multimap.assignBedrooms([this.player]);
         let spawnHelper = new PlayerSpawnHelper(this);
-        let position = spawnHelper.getPlayerSpawnPoint();
-        this.player = new Player(this, position);
+        this.player.position = spawnHelper.getPlayerSpawnPoint();
     }
 
     private createSendings() {

@@ -2,7 +2,7 @@ import {Game} from "../../game";
 import {Point3D} from "../../point3d";
 import {Tile} from "../../tile/tile";
 import {RoomTile} from "../../tile/room_tile";
-import {RoomType} from "../../room/room_decorator";
+import {Player} from "../player";
 
 export class PlayerSpawnHelper {
 
@@ -18,7 +18,7 @@ export class PlayerSpawnHelper {
 
     private tileFilter(tile: Tile): boolean {
         if (tile instanceof RoomTile) {
-            return tile.roomProps.type == RoomType.BEDROOM;
+            return tile.roomProps.occupant != null && tile.roomProps.occupant instanceof Player;
         }
     }
 
