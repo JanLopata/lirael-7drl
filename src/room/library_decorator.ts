@@ -14,7 +14,6 @@ export class LibraryDecorator {
 
         const size = room.rd.minus(room.lt);
         let vertical = size.x < size.y;
-        console.log(`decorating library with lt=${room.lt} rd=${room.rd}, vertical=${vertical}`)
 
         if (vertical) {
             this.decorateVertical(size, room);

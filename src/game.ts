@@ -43,7 +43,6 @@ export class Game {
     private actionLogPosition: Point;
     private gameState: GameState;
 
-    private pineapplePoint: Point3D;
     private foregroundColor = "white";
     private backgroundColor = "black";
     private maximumTurns = 360;
@@ -205,8 +204,6 @@ export class Game {
             if (!actor) {
                 break;
             }
-            console.log("loop tick")
-
             await actor.act();
             if (actor.type === ActorType.Player) {
                 this.statusLine.turns += 1;
@@ -226,8 +223,6 @@ export class Game {
 
     private drawPanel(): void {
         this.display.clear();
-        console.log(this.player)
-        console.log(this.player.position)
 
         // somewhat confusing view of neighbour levels
         const levelsToShow = this.getLevelsToShow();

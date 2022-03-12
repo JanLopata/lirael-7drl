@@ -99,7 +99,6 @@ export class RoomDecorator {
             if (tile == null)
                 continue;
             if (tile.type == TileType.Floor) {
-                console.log(`room ${room.lt} - ${room.rd} not suitable for bedroom`)
                 return false;
             }
         }
