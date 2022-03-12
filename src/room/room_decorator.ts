@@ -58,7 +58,7 @@ export class RoomDecorator {
         if (room.squaredSize < 15 && RoomDecorator.isSuitableForBedroom(room, map)) {
             if (this.assignType(room, RoomType.BEDROOM)) {
                 room.danger = true;
-                room.typicalRoomTile.refreshDangerColor();
+                room.typicalRoomTile.refreshTilesAfterRoomPropsChange();
                 return true;
             }
             return false;
@@ -70,7 +70,7 @@ export class RoomDecorator {
 
         if (this.assignType(room, RoomType.LIBRARY)) {
             room.danger = RNG.getUniform() > 0.6;
-            room.typicalRoomTile.refreshDangerColor();
+            room.typicalRoomTile.refreshTilesAfterRoomPropsChange();
             return true;
         }
         return false;

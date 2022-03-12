@@ -113,7 +113,7 @@ export class RoomsAround {
             if (room.occupant instanceof Player) {
                 // remove danger
                 room.danger = false;
-                room.typicalRoomTile.refreshDangerColor();
+                room.typicalRoomTile.refreshTilesAfterRoomPropsChange();
             }
         }
     }
