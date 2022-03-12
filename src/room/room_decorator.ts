@@ -33,9 +33,9 @@ export class RoomDecorator {
     }
 
     constructor() {
-        this.roomTypeLimit[RoomType.DINING_ROOM] = 2;
-        this.roomTypeLimit[RoomType.BEDROOM] = 12;
-        this.roomTypeLimit[RoomType.LIBRARY] = 8;
+        this.roomTypeLimit[RoomType.DINING_ROOM] = 3;
+        this.roomTypeLimit[RoomType.BEDROOM] = 16;
+        this.roomTypeLimit[RoomType.LIBRARY] = 15;
     }
 
 
