@@ -45,7 +45,6 @@ export abstract class AIActor implements Actor {
             let lastStep3d = new Point3D(this.position.level, lastStep.x, lastStep.y);
             if (!this.game.mapIsPassable(lastStep3d)) {
                 // unreachable last step - remove
-                console.log("removing last unreachable step for " + this.getName());
                 this.path = [];
             }
         }
@@ -54,7 +53,6 @@ export abstract class AIActor implements Actor {
             // done, or target unreachable - reset actor's target
             this.target = null;
             this.nextTargetCounter = RNG.getUniformInt(this.nextTargetCounterMax / 2, this.nextTargetCounterMax);
-            console.log("resetting AI actor target and waiting for " + this.nextTargetCounter + " moves");
             return Promise.resolve();
         }
 
@@ -93,7 +91,7 @@ export abstract class AIActor implements Actor {
     private ensureTarget() {
 
         if (this.notMovedCounter > this.nextTargetCounterMax) {
-            console.log(`${this.getName()} has not moved for ${this.notMovedCounter} turns - forcing target change`);
+            // forcing target change
             this.target = this.game.getRandomTarget(this.targetFilter);
         }
 

@@ -14,7 +14,6 @@ export class BedroomDecorator {
 
     public decorate(room: RoomProperties) {
 
-        console.log(`decorating bedroom with lt=${room.lt} rd=${room.rd}`)
         let snake = SnakeHelper.getSnake(room.lt, room.rd);
         SnakeHelper.rotateSnakeRandomly(snake);
         snake.push(snake[0]);
@@ -23,28 +22,22 @@ export class BedroomDecorator {
         let doorNearby = BedroomDecorator.doorNearby(snake[0], room);
         for (let i = 1; i < snake.length - 1; i++) {
             const nextDoorNearby = BedroomDecorator.doorNearby(snake[i], room);
-            console.log(snake[i], + " ", doorNearby + " " + nextDoorNearby);
             if (!(bedPlaced || doorNearby || nextDoorNearby)) {
                 // place bed
-                console.log(`placing bed to ${snake[i]}`);
                 this.placeBed(room, snake[i - 1], snake[i]);
                 bedPlaced = true;
                 continue;
-            } else {
-                console.log(`could not place bed to ${snake[i]}`);
             }
             doorNearby = nextDoorNearby;
 
             if (!nextDoorNearby && RNG.getUniform() > 0.7) {
                 // place bookshelf
-                console.log(`placing bookshelf to ${snake[i]}`);
                 this.map.setTile(snake[i].x, snake[i].y, new Bookshelf(room.danger));
             }
         }
         if (!bedPlaced) {
             // fallback bed placing
             let center = room.lt.plus(room.rd).scale(0.5);
-            console.log(`placing fallback bed to ${center}`);
             this.placeBed(room, center, center.plus(new Point(0, 1)));
         }
     }

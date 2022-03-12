@@ -9,6 +9,9 @@ import {WarpTile} from "./tile/warptile";
 import {RoomsAround} from "./rooms_around";
 import {RoomDecorator} from "./room/room_decorator";
 import {Actor} from "./actor/actor";
+import {RoomProperties} from "./room/room_property";
+
+type SpiralSize = { inner: number, outer: number };
 
 export class Multimap {
     private multimap: { [level: number]: Map }
@@ -32,30 +35,47 @@ export class Multimap {
         for (let i = 0; i < 7; i++) {
             this.generateLevel(i);
         }
+        this.decorateRooms();
         this.connectSpirals();
+    }
+
+    private decorateRooms() {
+        const allRooms: RoomProperties[] = [];
+        for (let roomsAround of this.roomsAround) {
+            for (let room of roomsAround.getRooms()) {
+                allRooms.push(room);
+            }
+        }
+        RNG.shuffle(allRooms);
+        for (let room of allRooms) {
+            this.roomDecorator.decorate(room, this.getMap(room.level));
+        }
     }
 
     generateLevel(level: number) {
         this.multimap[level] = new Map(this.game);
 
         const left = level % 2 == 0;
-        const spiralPart = new SpiralPart(level, 4, 9, left)
+        let spiralSize = Multimap.getSpiralSize(level);
+        const spiralPart = new SpiralPart(level, spiralSize.inner, spiralSize.outer, left)
         spiralPart.imprintToMap(this.getMap(level));
         this.spirals.push(spiralPart);
 
-        const roomsAround = new RoomsAround(level, spiralPart, 15, this.roomDecorator);
+        const roomsAround = new RoomsAround(level, spiralPart, 13 + level);
         roomsAround.imprintToMap(this.getMap(level));
         this.roomsAround.push(roomsAround);
+    }
+
+    private static getSpiralSize(level: number) : SpiralSize{
+        const inner = 3 + Math.floor(level * 0.6);
+        const outer = 6 + Math.floor(level * 1.2);
+        return {inner, outer};
     }
 
     connectSpirals() {
         for (let spiral of this.spirals) {
             spiral.connect(this);
         }
-    }
-
-    setTile(level: number, x: number, y: number, tile: Tile): void {
-        this.multimap[level].setTile(x, y, tile);
     }
 
     getRandomTilePositions(type: TileType, quantity: number = 1): Point3D[] {
@@ -134,7 +154,7 @@ export class Multimap {
     }
 
     assignBedrooms(actors: Actor[]) {
-        let shuffledRoomsAround = RNG.shuffle([... this.roomsAround]);
+        let shuffledRoomsAround = RNG.shuffle([...this.roomsAround]);
         for (let roomsAround of shuffledRoomsAround) {
             roomsAround.assignBedrooms(actors);
         }

@@ -6,7 +6,7 @@ import {Point} from "./point";
 import {Door} from "./tile/door";
 import {RoomTile} from "./tile/room_tile";
 import {RoomProperties} from "./room/room_property";
-import {RoomDecorator, RoomType} from "./room/room_decorator";
+import {RoomType} from "./room/room_decorator";
 import {Actor} from "./actor/actor";
 import {Player} from "./actor/player";
 
@@ -25,16 +25,14 @@ export class RoomsAround {
     private readonly width: number;
     private readonly height: number;
     private readonly shift: Point;
-    private readonly decorator: RoomDecorator;
     private digger: Digger;
 
-    constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number, decorator: RoomDecorator) {
+    constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number) {
         this.level = level;
         this.spiralPart = spiralPart;
         this.doorsList = [];
         this.roomsWithProperty = [];
         this.generatedTiles = {};
-        this.decorator = decorator;
         if (roomDebug) {
             this.width = 20;
             this.height = 20;
@@ -57,12 +55,8 @@ export class RoomsAround {
         digger.create(this.diggerCallback.bind(this));
 
         for (let room of digger.getRooms()) {
-            const x = this.shift.x + room.getCenter()[0];
-            const y = this.shift.y + room.getCenter()[1]
-            console.log("level " + this.level + " room: " + x + "," + y);
             room.getDoors(this.doorsCallback.bind(this));
         }
-        console.log("created rooms: " + digger.getRooms().length)
         this.digger = digger;
     }
 
@@ -90,16 +84,15 @@ export class RoomsAround {
 
         for (let doorPoint of this.doorsList) {
             const point = doorPoint.plus(this.shift);
-            console.log("adding doors to level " + this.level + ' ' + point)
-
             if (map.getTileType(point.x, point.y) == TileType.Floor) {
                 map.setTile(point.x, point.y, new Door(1));
             }
         }
 
-        for (let room of this.roomsWithProperty) {
-            this.decorator.decorate(room, map);
-        }
+    }
+
+    public getRooms(): RoomProperties[] {
+        return [...this.roomsWithProperty];
     }
 
     assignBedrooms(actorList: Actor[]) {

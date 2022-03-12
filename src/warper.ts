@@ -25,7 +25,6 @@ export class Warper {
 
         this.informPlayer(actor, tile);
         actor.position = new Point3D(tile.targetLevel, actor.position.x, actor.position.y)
-        console.log("Actor " + actor.getName() + " warped to level " + actor.position.level);
     }
 
     private handleSpam(actor: Actor) {
@@ -35,9 +34,7 @@ export class Warper {
     }
 
     private informPlayer(actor: Actor, tile: WarpTile) {
-        let isPlayer = actor instanceof Player;
-        console.log("inform - is player= " + isPlayer);
-        if (!isPlayer) {
+        if (!(actor instanceof Player)) {
             return;
         }
 

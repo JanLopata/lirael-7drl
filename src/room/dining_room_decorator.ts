@@ -12,7 +12,6 @@ export class DiningRoomDecorator {
     public decorate(room: RoomProperties) {
 
         const size = room.rd.minus(room.lt);
-        console.log(`decorating dining room with lt=${room.lt} rd=${room.rd}`)
 
         for (let i = 1; i < size.x; i++) {
             for (let j = 1; j < size.y; j++) {

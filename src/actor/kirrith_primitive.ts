@@ -21,7 +21,6 @@ export class KirrithPrimitive implements Actor {
         if (target == null) {
             return Promise.resolve();
         }
-        console.log(this.position);
 
         let astar = new Path.AStar(target.x, target.y, this.game.onLevelNavigable(this.position.level, 1), {topology: 8});
 
