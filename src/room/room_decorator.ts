@@ -35,7 +35,7 @@ export class RoomDecorator {
     constructor() {
         this.roomTypeLimit[RoomType.DINING_ROOM] = 3;
         this.roomTypeLimit[RoomType.BEDROOM] = 16;
-        this.roomTypeLimit[RoomType.LIBRARY] = 15;
+        this.roomTypeLimit[RoomType.LIBRARY] = 18;
     }
 
 
@@ -65,7 +65,8 @@ export class RoomDecorator {
         }
 
         if (room.squaredSize >= 35) {
-            return this.assignType(room, RoomType.DINING_ROOM);
+            if (this.assignType(room, RoomType.DINING_ROOM))
+                return true;
         }
 
         if (this.assignType(room, RoomType.LIBRARY)) {
