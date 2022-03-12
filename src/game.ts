@@ -53,7 +53,7 @@ export class Game {
     constructor() {
         this.gameSize = { width: 75, height: 27 };
         this.displaySizing = new DisplaySizing(
-            new Point(this.gameSize.width / 2, Math.ceil((this.gameSize.height- this.textLines) / 2)),
+            new Point(Math.floor(this.gameSize.width / 2), Math.ceil((this.gameSize.height- this.textLines) / 2)),
             new Point(0, 0),
             new Point(this.gameSize.width, this.gameSize.height - this.textLines - 2)
         );
