@@ -5,9 +5,9 @@ import { Point } from "../point";
 import { Glyph } from "../glyph";
 import { InputUtility } from "../input-utility";
 import {Point3D} from "../point3d";
-import {KirrithPrimitive} from "./kirrithPrimitive";
 import {Clair} from "./clair";
 import {Sending} from "./sending";
+import {KirrithPrimitive} from "./kirrith_primitive";
 
 export class Player implements Actor {
     glyph: Glyph;
@@ -56,9 +56,6 @@ export class Player implements Actor {
             this.position = newPoint3d;
             this.game.warper.tryActorLevelWarp(this);
 
-            validInput = true;
-        } else if (code === KEYS.VK_RETURN || code === KEYS.VK_SPACE) {
-            this.game.checkBox(this.position.level, this.position.x, this.position.y);
             validInput = true;
         } else {
             validInput = code === KEYS.VK_NUMPAD5; // Wait a turn

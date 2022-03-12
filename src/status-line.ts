@@ -2,6 +2,8 @@ import { Game } from "./game";
 import { Point } from "./point";
 import { padRight, padLeft } from "./text-utility";
 
+export const bookNumberColor = "#afb";
+
 export class StatusLine {
     night: number;
     turns: number;
@@ -24,9 +26,10 @@ export class StatusLine {
     }
 
     draw(): void {
+        const turnsColor = this.turns > this.turnsMax ? "#f00" : '#fff';
         let text = ""
-            + `Turns: ${padLeft(this.turns.toString(), 3)} / ${this.turnsMax.toString()} `
-            + `Books found: ${padRight(this.booksFound.toString(), 3)}`;
+            + `Turns: %c{${turnsColor}}${padLeft(this.turns.toString(), 3)} / ${this.turnsMax.toString()} %c{} `
+            + `Books found: %c{${bookNumberColor}}${padRight(this.booksFound.toString(), 3)}`;
         this.game.drawText(this.position, text, this.maxWidth);
     }
 }

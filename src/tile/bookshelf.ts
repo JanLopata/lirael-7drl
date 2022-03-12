@@ -5,9 +5,9 @@ import {Player} from "../actor/player";
 import {RNG} from "rot-js";
 import {Glyph} from "../glyph";
 
-const basicColor = "#663931";
-const searchedColor = "#331c18";
-const interestingColor = "#b36d59";
+const basicColor = "#b36456";
+const searchedColor = "#663830";
+const interestingColor = "#ab73e6";
 
 const glyphChar = "#";
 

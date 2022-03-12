@@ -44,7 +44,7 @@ export class Clair extends AIActor {
     }
 
     playerIsStandingInWayCallback() {
-        this.game.addLogMessage(this.name + " is giving you a stern look - you are standing in her way!");
+        this.game.addLogMessage(`%c{${this.glyph.foregroundColor}}${this.name}%c{} is giving you a stern look - you are standing in her way!`);
     }
 
     getUnlockPower(): number {

@@ -6,7 +6,7 @@ import {Point} from "./point";
 import {Glyph} from "./glyph";
 import {Actor, ActorType} from "./actor/actor";
 import {GameState} from "./game-state";
-import {StatusLine} from "./status-line";
+import {bookNumberColor, StatusLine} from "./status-line";
 import {MessageLog} from "./message-log";
 import {InputUtility} from "./input-utility";
 import {Tile, TileType} from "./tile/tile";
@@ -23,7 +23,7 @@ import {ClairSpawnHelper} from "./actor/helpers/clair_spawn_helper";
 import {SendingsSpawnHelper} from "./actor/helpers/sendings_spawn_helper";
 import {Bookshelf} from "./tile/bookshelf";
 import {PlayerSpawnHelper} from "./actor/helpers/player_spawn_helper";
-import {KirrithPrimitive} from "./actor/kirrithPrimitive";
+import {KirrithPrimitive} from "./actor/kirrith_primitive";
 
 export class Game {
     private display: Display;
@@ -53,7 +53,7 @@ export class Game {
     constructor() {
         this.gameSize = { width: 75, height: 27 };
         this.displaySizing = new DisplaySizing(
-            new Point(this.gameSize.width / 2, Math.ceil((this.gameSize.height- this.textLines) / 2)),
+            new Point(Math.floor(this.gameSize.width / 2), Math.ceil((this.gameSize.height- this.textLines) / 2)),
             new Point(0, 0),
             new Point(this.gameSize.width, this.gameSize.height - this.textLines - 2)
         );
@@ -72,7 +72,7 @@ export class Game {
         this.multimap = new Multimap(this);
         this.statusLine = new StatusLine(this, this.statusLinePosition, this.gameSize.width, { maxBoxes: this.maximumTurns });
         this.messageLog = new MessageLog(this, this.actionLogPosition, this.gameSize.width, this.textLines);
-        this.warper = new Warper(this.multimap);
+        this.warper = new Warper(this.multimap, this);
 
         this.initializeGame();
         this.mainLoop();
@@ -130,50 +130,22 @@ export class Game {
     }
 
     endTheGameReachingBed() {
-        this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
+        this.messageLog.appendText("Try again with 'spacebar' or 'return'.");
+        this.messageLog.appendText("...");
         const books = this.statusLine.booksFound;
-        const bookNumberColor = "#aaffbb";
         if (books >= this.successfulNumberOfBooks) {
             this.messageLog.appendText(`Congratulation! There will be definitely a clue about the %c{#d6dbff}Sightc%{} in those books!`);
         } else if (books >= this.successfulNumberOfBooks * 0.85) {
-            this.messageLog.appendText(`Good work! It will probably help you ${this.player.getName()}'s next adventures.`);
+            this.messageLog.appendText(`Good work! It will probably help in ${this.player.getName()}'s next adventures.`);
         } else {
             const bookRef = books > 1? "those books": "this book";
             this.messageLog.appendText(`Yikes! There is only description of horrible monsters in ${bookRef}!`);
         }
-        const bookRef = books > 1? "books": "book";
-        this.messageLog.appendText(`You have reached safety of your bed with %c{${bookNumberColor}}${books} ${bookRef}%c{} to study.`);
+        const bookPlural = books > 1? "books": "book";
+        this.messageLog.appendText(`You have reached safety of your bed with %c{${bookNumberColor}}${books} ${bookPlural}%c{} to study.`);
         this.gameState.backToBed = true;
 
     }
-
-    checkBox(level:number, x: number, y: number): void {
-        switch (this.multimap.getTileType(level, x, y)) {
-            case Tile.box.type:
-                this.multimap.setTile(level, x, y, Tile.searchedBox);
-                this.statusLine.turns += 1;
-                if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
-                    this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-                    this.messageLog.appendText("Hooray! You found a pineapple.");
-                    this.gameState.backToBed = true;
-                } else {
-                    this.messageLog.appendText("This box is empty.");
-                }
-                break;
-            case Tile.searchedBox.type:
-                this.multimap.setTile(level, x, y, Tile.destroyedBox);
-                this.messageLog.appendText("You destroy this box!");
-                break;
-            case Tile.destroyedBox.type:
-                this.messageLog.appendText("This box is already destroyed.");
-                break;
-            default:
-                this.messageLog.appendText("There is no box here!");
-                break;
-        }
-    }
-
-
 
     interact(actor: Actor, target: Point3D): boolean {
 
@@ -185,8 +157,12 @@ export class Game {
     }
 
     catchPlayer(actor: Actor): void {
-        this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-        this.messageLog.appendText(`Game over - you were captured by ${actor.getName()}!`);
+        this.messageLog.appendText("Try again with 'spacebar' or 'return'.");
+        this.messageLog.appendText("...");
+        this.messageLog.appendText(`%c{#f00}Game over%c{} - you were captured by ${actor.getName()}!`);
+        const kirrithText = actor instanceof KirrithPrimitive? ` You should be in your bed!`: "";
+        this.messageLog.appendText(
+            `%c{${actor.glyph.foregroundColor}}${actor.getName()}:%c{} what are you doing here, ${this.player.getName()}?${kirrithText}`);
         this.gameState.playerWasCaught = true;
     }
 
@@ -314,9 +290,9 @@ export class Game {
 
         let helpMessage = [
             `Find some interesting books in library %c{${bookshelf.glyph.foregroundColor}}bookshelves%c{}.`,
-            `Move with numpad, search %c{${bookshelf.glyph.foregroundColor}}bookshelf%c{} by walking into them'.`,
-            `Interact with doors with CTRL + numpad, or ALT + numpad key`,
-            `Watch out for %c{${dummyClair.glyph.foregroundColor}}Clairs%c{} on %c{${dangerColor}}restricted areas%c{}!`
+            `Move with numpad, search %c{${bookshelf.glyph.foregroundColor}}bookshelves%c{} by walking into them'.`,
+            `Interact with doors with CTRL, SHIFT, ALT or META + numpad`,
+            `Watch out for %c{${dummyClair.glyph.foregroundColor}}Clairs%c{} in %c{${dangerColor}}restricted areas%c{}!`
         ];
 
         for (let index = helpMessage.length - 1; index >= 0; --index) {
