@@ -353,11 +353,12 @@ export class Game {
     }
 
     private spawnKirrith() {
-        let backupPosition = this.getRandomTilePositions(TileType.Floor)[0];
-        let kirrith = new KirrithPrimitive(this, backupPosition);
+        const fallbackPosition = this.getRandomTilePositions(TileType.Floor)[0];
+        let kirrith = new KirrithPrimitive(this, fallbackPosition);
         this.multimap.assignBedrooms([kirrith]);
-        kirrith.position = this.getRandomTarget(
+        const roomPosition = this.getRandomTarget(
             tile => (tile instanceof RoomTile) && tile.roomProps.occupant == kirrith);
+        kirrith.position = roomPosition != null ? roomPosition : kirrith.position;
         this.npcList.push(kirrith);
     }
 
