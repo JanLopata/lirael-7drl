@@ -228,10 +228,19 @@ export class Game {
 
         // somewhat confusing view of neighbour levels
         const levelsToShow = this.getLevelsToShow();
-        for (let i = this.displaySizing.topLeft.x; i < this.displaySizing.bottomRight.x; i++) {
-            for (let j = this.displaySizing.topLeft.y; j < this.displaySizing.bottomRight.y; j++) {
+        const xDivide = this.displaySizing.center.x - this.player.position.x;
+
+        for (let j = this.displaySizing.topLeft.y; j < this.displaySizing.bottomRight.y; j++) {
+
+            const leftBackgroundLevel = levelsToShow.left != null ? levelsToShow.left : levelsToShow.right;
+            for (let i = this.displaySizing.topLeft.x; i < xDivide; i++) {
                 this.draw(new Point(i, j), this.background.getGlyph(
-                    this.player.position.level, i + this.player.position.x, j + this.player.position.y));
+                    leftBackgroundLevel, i + this.player.position.x, j + this.player.position.y));
+            }
+            const rightBackgroundLevel = levelsToShow.right != null ? levelsToShow.right : levelsToShow.left;
+            for (let i = xDivide; i < this.displaySizing.bottomRight.x; i++) {
+                this.draw(new Point(i, j), this.background.getGlyph(
+                    rightBackgroundLevel, i + this.player.position.x, j + this.player.position.y));
             }
         }
 
@@ -258,7 +267,7 @@ export class Game {
     }
 
     private getLevelsToShow(): LevelsToShow {
-        const result: LevelsToShow = { left: -10, right:-10};
+        const result: LevelsToShow = { left: null, right:null};
 
         if (this.player.position.y == 0) {
             if (this.player.position.x > 0) {
