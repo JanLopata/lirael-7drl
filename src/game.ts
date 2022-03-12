@@ -130,7 +130,7 @@ export class Game {
     }
 
     endTheGameReachingBed() {
-        this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
+        this.messageLog.appendText("Try again with 'spacebar' or 'return'.");
         const books = this.statusLine.booksFound;
         const bookNumberColor = "#aaffbb";
         if (books >= this.successfulNumberOfBooks) {
@@ -146,34 +146,6 @@ export class Game {
         this.gameState.backToBed = true;
 
     }
-
-    checkBox(level:number, x: number, y: number): void {
-        switch (this.multimap.getTileType(level, x, y)) {
-            case Tile.box.type:
-                this.multimap.setTile(level, x, y, Tile.searchedBox);
-                this.statusLine.turns += 1;
-                if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
-                    this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-                    this.messageLog.appendText("Hooray! You found a pineapple.");
-                    this.gameState.backToBed = true;
-                } else {
-                    this.messageLog.appendText("This box is empty.");
-                }
-                break;
-            case Tile.searchedBox.type:
-                this.multimap.setTile(level, x, y, Tile.destroyedBox);
-                this.messageLog.appendText("You destroy this box!");
-                break;
-            case Tile.destroyedBox.type:
-                this.messageLog.appendText("This box is already destroyed.");
-                break;
-            default:
-                this.messageLog.appendText("There is no box here!");
-                break;
-        }
-    }
-
-
 
     interact(actor: Actor, target: Point3D): boolean {
 

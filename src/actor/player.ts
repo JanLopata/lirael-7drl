@@ -57,9 +57,6 @@ export class Player implements Actor {
             this.game.warper.tryActorLevelWarp(this);
 
             validInput = true;
-        } else if (code === KEYS.VK_RETURN || code === KEYS.VK_SPACE) {
-            this.game.checkBox(this.position.level, this.position.x, this.position.y);
-            validInput = true;
         } else {
             validInput = code === KEYS.VK_NUMPAD5; // Wait a turn
         }
