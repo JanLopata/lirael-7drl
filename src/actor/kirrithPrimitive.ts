@@ -5,16 +5,14 @@ import {Point} from "../point";
 import {Glyph} from "../glyph";
 import {Point3D} from "../point3d";
 
-export class Pedro implements Actor {
+export class KirrithPrimitive implements Actor {
     glyph: Glyph;
     type: ActorType;
     private path: Point[];
-    name: string
 
     constructor(private game: Game, public position: Point3D) {
-        this.glyph = new Glyph("P", "#f00", "");
-        this.name = 'Pedro';
-        this.type = ActorType.Pedro;
+        this.glyph = new Glyph("K", "#f00", "");
+        this.type = ActorType.Kirrith;
     }
 
     act(): Promise<any> {
@@ -23,13 +21,17 @@ export class Pedro implements Actor {
         if (target == null) {
             return Promise.resolve();
         }
+        console.log(this.position);
 
-        let astar = new Path.AStar(target.x, target.y, this.game.onLevelNavigable(this.position.level, 1), {topology: 4});
+        let astar = new Path.AStar(target.x, target.y, this.game.onLevelNavigable(this.position.level, 1), {topology: 8});
 
         this.path = [];
-        // astar.compute(this.position.x, this.position.y, this.pathCallback.bind(this));
-        // this.path.shift(); // remove Pedros position
+        if (this.game.statusLine.turns >= this.game.statusLine.turnsMax) {
+            // activate Kirrith when time's up
+            astar.compute(this.position.x, this.position.y, this.pathCallback.bind(this));
+        }
 
+        this.path.shift(); // remove actor position
         if (this.path.length > 0) {
             let nextStep = this.path[0];
             let nextStep3D = new Point3D(this.position.level, nextStep.x, nextStep.y);
@@ -45,9 +47,10 @@ export class Pedro implements Actor {
             }
         }
 
-        if (this.position.equals(playerPosition)) {
+        if (this.catchPlayerCheck()) {
             this.game.catchPlayer(this);
         }
+
 
         this.game.warper.tryActorLevelWarp(this);
 
@@ -58,7 +61,29 @@ export class Pedro implements Actor {
         this.path.push(new Point(x, y));
     }
 
-    getName(): string {
-        return "Pedro";
+    catchPlayerCheck(): boolean {
+        let playerPosition = this.game.getPlayerPosition();
+        if (playerPosition.equals(this.position))
+            return true;
+
+        let myRoom = this.game.getPositionRoom(this.position);
+        if (myRoom == null) {
+            return false;
+        }
+        if (!myRoom.danger) {
+            return false;
+        }
+        let playerRoom = this.game.getPositionRoom(playerPosition)
+        // standing in the same room as a player, room marked dangerous
+        return myRoom.equals(playerRoom)
     }
+
+    getName(): string {
+        return "Aunt Kirrith";
+    }
+
+    getUnlockPower(): number {
+        return 2;
+    }
+
 }

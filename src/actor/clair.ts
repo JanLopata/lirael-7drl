@@ -7,7 +7,8 @@ import {AIActor} from "./ai_actor";
 
 export class Clair extends AIActor {
     name: string;
-    constructor(game: Game, position: Point3D, name, public unlockPower) {
+
+    constructor(game: Game, position: Point3D, name: string, public unlockPower: number) {
         super(game, position, new Glyph("C", "#d6dbff", ""));
         this.type = ActorType.Clair;
         this.name = name;
@@ -44,6 +45,10 @@ export class Clair extends AIActor {
 
     playerIsStandingInWayCallback() {
         this.game.addLogMessage(this.name + " is giving you a stern look - you are standing in her way!");
+    }
+
+    getUnlockPower(): number {
+        return this.unlockPower;
     }
 
 }

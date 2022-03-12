@@ -81,15 +81,17 @@ export class Map {
         return x + "," + y;
     }
 
-    private keyToPoint(key: string): Point {
+    iteratePointsAndTiles(callback: (point: Point, tile: Tile) => void) {
+        for (let mapKey in this.map) {
+            let keyPoint = this.keyToPoint(mapKey);
+            let keyTile = this.map[mapKey];
+            callback(keyPoint, keyTile);
+        }
+    }
+
+    public keyToPoint(key: string): Point {
         let parts = key.split(",");
         return new Point(parseInt(parts[0]), parseInt(parts[1]));
     }
 
-    private diggerCallback(x: number, y: number, wall: number): void {
-        if (wall) {
-            return;
-        }
-        this.map[this.coordinatesToKey(x, y)] = Tile.floor;
-    }
 }

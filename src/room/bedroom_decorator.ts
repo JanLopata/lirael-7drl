@@ -26,7 +26,7 @@ export class BedroomDecorator {
             if (!(bedPlaced || doorNearby || nextDoorNearby)) {
                 // place bed
                 console.log(`placing bed to ${snake[i]}`);
-                let bedTile = new Bed();
+                let bedTile = new Bed(room);
                 this.map.setTile(snake[i - 1].x, snake[i - 1].y, bedTile);
                 this.map.setTile(snake[i].x, snake[i].y, bedTile);
                 bedPlaced = true;
@@ -35,7 +35,7 @@ export class BedroomDecorator {
                 console.log(`could not place bed to ${snake[i]}`);
             }
 
-            if (nextDoorNearby && RNG.getUniform() > 0.7) {
+            if (!nextDoorNearby && RNG.getUniform() > 0.7) {
                 // place bookshelf
                 console.log(`placing bookshelf to ${snake[i]}`);
                 this.map.setTile(snake[i].x, snake[i].y, new Bookshelf(room.danger));

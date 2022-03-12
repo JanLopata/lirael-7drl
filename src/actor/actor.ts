@@ -3,10 +3,9 @@ import {Point3D} from "../point3d";
 
 export const enum ActorType {
     Player,
-    Pedro,
-    TinyPedro,
     Sending,
-    Clair
+    Clair,
+    Kirrith,
 }
 
 export interface Actor {
@@ -17,4 +16,5 @@ export interface Actor {
     act(): Promise<any>;
 
     getName(): string;
+    getUnlockPower(): number;
 }

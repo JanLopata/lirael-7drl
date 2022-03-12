@@ -6,7 +6,9 @@ import {Point} from "./point";
 import {Door} from "./tile/door";
 import {RoomTile} from "./tile/room_tile";
 import {RoomProperties} from "./room/room_property";
-import {RoomDecorator} from "./room/room_decorator";
+import {RoomDecorator, RoomType} from "./room/room_decorator";
+import {Actor} from "./actor/actor";
+import {Player} from "./actor/player";
 
 const roomDebug = false;
 
@@ -69,6 +71,7 @@ export class RoomsAround {
         for (let room of this.digger.getRooms()) {
             let props = new RoomProperties(room, this.level, this.shift);
             let roomTile = new RoomTile(props);
+            props.typicalRoomTile = roomTile;
             this.roomsWithProperty.push(props);
             for (let i = room._x1; i <= room._x2; i++) {
                 for (let j = room._y1; j <= room._y2; j++) {
@@ -96,6 +99,22 @@ export class RoomsAround {
 
         for (let room of this.roomsWithProperty) {
             this.decorator.decorate(room, map);
+        }
+    }
+
+    assignBedrooms(actorList: Actor[]) {
+
+        for (let room of this.roomsWithProperty) {
+            if (actorList.length == 0)
+                return;
+            if (room.type != RoomType.BEDROOM || room.occupant != null)
+                continue;
+            room.occupant = actorList.pop();
+            if (room.occupant instanceof Player) {
+                // remove danger
+                room.danger = false;
+                room.typicalRoomTile.refreshDangerColor();
+            }
         }
     }
 

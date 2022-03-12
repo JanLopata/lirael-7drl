@@ -31,4 +31,8 @@ export class Sending extends AIActor {
         return this.name;
     }
 
+    getUnlockPower(): number {
+        return 2;
+    }
+
 }
