@@ -13,10 +13,9 @@ export class BedroomDecorator {
 
     public decorate(room: RoomProperties) {
 
-        const size = room.rd.minus(room.lt);
-        let vertical = size.x < size.y;
-        console.log(`decorating bedroom with lt=${room.lt} rd=${room.rd}, vertical=${vertical}`)
+        console.log(`decorating bedroom with lt=${room.lt} rd=${room.rd}`)
         let snake = BedroomDecorator.snake(room.lt, room.rd);
+        BedroomDecorator.rotateSnakeRandomly(snake);
         snake.push(snake[0]);
 
         let bedPlaced = false;
@@ -27,9 +26,7 @@ export class BedroomDecorator {
             if (!(bedPlaced || doorNearby || nextDoorNearby)) {
                 // place bed
                 console.log(`placing bed to ${snake[i]}`);
-                let bedTile = new Bed(room);
-                this.map.setTile(snake[i - 1].x, snake[i - 1].y, bedTile);
-                this.map.setTile(snake[i].x, snake[i].y, bedTile);
+                this.placeBed(room, snake[i - 1], snake[i]);
                 bedPlaced = true;
                 continue;
             } else {
@@ -42,9 +39,27 @@ export class BedroomDecorator {
                 console.log(`placing bookshelf to ${snake[i]}`);
                 this.map.setTile(snake[i].x, snake[i].y, new Bookshelf(room.danger));
             }
-
         }
+        if (!bedPlaced) {
+            // fallback bed placing
+            let center = room.lt.plus(room.rd).scale(0.5);
+            console.log(`placing fallback bed to ${center}`);
+            this.placeBed(room, center, center.plus(new Point(0, 1)));
+        }
+    }
 
+    private static rotateSnakeRandomly(snake: Point[]) {
+        let shift = RNG.getUniformInt(0, snake.length - 1);
+        for (let i = 0; i < shift; i++) {
+            let first = snake.shift();
+            snake.push(first);
+        }
+    }
+
+    private placeBed(room: RoomProperties, point1: Point, point2: Point) {
+        let bedTile = new Bed(room);
+        this.map.setTile(point1.x, point1.y, bedTile);
+        this.map.setTile(point2.x, point2.y, bedTile);
     }
 
     // TODO: reuse
