@@ -1,4 +1,4 @@
-import { Glyph } from "../glyph";
+import {Glyph} from "../glyph";
 import {Actor} from "../actor/actor";
 import {Game} from "../game";
 
@@ -14,6 +14,7 @@ export const enum TileType {
     Chair,
     Table,
     CorridorFloor,
+    Empty,
 
 }
 
@@ -26,6 +27,7 @@ export class Tile {
     static readonly door = new Tile(TileType.Door, new Glyph("+", "#847e87"), false)
     static readonly chair = new Tile(TileType.Chair, new Glyph("x", "#7d6c61"), false)
     static readonly table = new Tile(TileType.Table, new Glyph("T", "#779bdc"), false)
+    static readonly empty = new Tile(TileType.Empty, new Glyph(" "), false);
 
     constructor(public readonly type: TileType, public glyph: Glyph, protected passable: boolean) { }
 

@@ -64,6 +64,7 @@ export class Multimap {
         const roomsAround = new RoomsAround(level, spiralPart, 13 + level);
         roomsAround.imprintToMap(this.getMap(level));
         this.roomsAround.push(roomsAround);
+        this.multimap[level].enlarge();
     }
 
     private static getSpiralSize(level: number) : SpiralSize{

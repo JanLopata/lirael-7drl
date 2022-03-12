@@ -89,6 +89,31 @@ export class Map {
         }
     }
 
+    public enlarge() {
+
+        const newTiles: {[key: string]: number} = {}
+
+        for (let mapKey in this.map) {
+            let point = this.keyToPoint(mapKey);
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (i == 0 && j==0)
+                        continue;
+
+                    const enlargedKey = this.coordinatesToKey(point.x + i, point.y + j);
+                    newTiles[enlargedKey] = 0; // dummy value
+                }
+            }
+        }
+
+        // enlarge with empty tile
+        for (let mapKey in newTiles) {
+            if (this.map[mapKey] == null) {
+                this.map[mapKey] = Tile.empty;
+            }
+        }
+    }
+
     public keyToPoint(key: string): Point {
         let parts = key.split(",");
         return new Point(parseInt(parts[0]), parseInt(parts[1]));
