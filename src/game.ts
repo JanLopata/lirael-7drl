@@ -118,7 +118,7 @@ export class Game {
 
     getNpcOn(point: Point3D): Actor {
         for (let npc of this.npcList) {
-            if (npc.position.equals(point)) {
+            if (point.equals(npc.position)) {
                 return npc;
             }
         }

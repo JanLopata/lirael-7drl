@@ -23,6 +23,7 @@ export class BedroomDecorator {
         let doorNearby = BedroomDecorator.doorNearby(snake[0], room);
         for (let i = 1; i < snake.length - 1; i++) {
             const nextDoorNearby = BedroomDecorator.doorNearby(snake[i], room);
+            console.log(snake[i], + " ", doorNearby + " " + nextDoorNearby);
             if (!(bedPlaced || doorNearby || nextDoorNearby)) {
                 // place bed
                 console.log(`placing bed to ${snake[i]}`);
@@ -34,6 +35,7 @@ export class BedroomDecorator {
             } else {
                 console.log(`could not place bed to ${snake[i]}`);
             }
+            doorNearby = nextDoorNearby;
 
             if (!nextDoorNearby && RNG.getUniform() > 0.7) {
                 // place bookshelf
