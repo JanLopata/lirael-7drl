@@ -1,6 +1,6 @@
 # Lirael's library
 
-Rogue like game, created in seven days as for [7DRL Challenge](https://itch.io/jam/7drl-challenge-2022).
+Rogue like game, created in seven days as part of the [7DRL Challenge](https://itch.io/jam/7drl-challenge-2022).
 
 You play as Lirael, Second Assistant Librarian in the glacier library.
 

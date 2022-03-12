@@ -1,7 +1,7 @@
 {
-    "name": "rotjs-typescript-basics",
+    "name": "lirael-7drl-2022",
     "version": "1.0.0",
-    "description": "Using the rot.js library with TypeScript in a basic example.",
+    "description": "Lirael's Library - Rogue like game, created in seven days as part of the 7DRL challenge.",
     "main": "index.js",
     "scripts": {
         "build": "webpack",
@@ -10,15 +10,15 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Mizar999/rotjs-typescript-basics.git"
+        "url": "git+https://github.com/JanLopata/lirael-7drl.git"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/Mizar999/rotjs-typescript-basics/issues"
+        "url": "https://github.com/JanLopata/lirael-7drl"
     },
-    "homepage": "https://github.com/Mizar999/rotjs-typescript-basics#readme",
+    "homepage": "https://github.com/JanLopata/lirael-7drl",
     "devDependencies": {
         "chokidar": ">=3.0.2",
         "kind-of": ">=6.0.3",
