@@ -72,7 +72,7 @@ export class Game {
         this.multimap = new Multimap(this);
         this.statusLine = new StatusLine(this, this.statusLinePosition, this.gameSize.width, { maxBoxes: this.maximumTurns });
         this.messageLog = new MessageLog(this, this.actionLogPosition, this.gameSize.width, this.textLines);
-        this.warper = new Warper(this.multimap);
+        this.warper = new Warper(this.multimap, this);
 
         this.initializeGame();
         this.mainLoop();
