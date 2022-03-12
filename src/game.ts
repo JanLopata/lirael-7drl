@@ -269,15 +269,6 @@ export class Game {
     private getLevelsToShow(): LevelsToShow {
         const result: LevelsToShow = { left: null, right:null};
 
-        if (this.player.position.y == 0) {
-            if (this.player.position.x > 0) {
-                result.right = this.player.position.level;
-            } else {
-                result.left = this.player.position.level;
-            }
-            return result;
-        }
-
         if (this.player.position.x >= 0) {
             if (this.player.position.y < 0) {
                 result.left = this.player.position.level + 1;
