@@ -11,6 +11,8 @@ import {RoomDecorator} from "./room/room_decorator";
 import {Actor} from "./actor/actor";
 import {RoomProperties} from "./room/room_property";
 
+type SpiralSize = { inner: number, outer: number };
+
 export class Multimap {
     private multimap: { [level: number]: Map }
     private spirals: SpiralPart[];
@@ -54,13 +56,20 @@ export class Multimap {
         this.multimap[level] = new Map(this.game);
 
         const left = level % 2 == 0;
-        const spiralPart = new SpiralPart(level, 4, 9, left)
+        let spiralSize = Multimap.getSpiralSize(level);
+        const spiralPart = new SpiralPart(level, spiralSize.inner, spiralSize.outer, left)
         spiralPart.imprintToMap(this.getMap(level));
         this.spirals.push(spiralPart);
 
         const roomsAround = new RoomsAround(level, spiralPart, 15);
         roomsAround.imprintToMap(this.getMap(level));
         this.roomsAround.push(roomsAround);
+    }
+
+    private static getSpiralSize(level: number) : SpiralSize{
+        const inner = 3 + Math.floor(level * 0.6);
+        const outer = 6 + Math.floor(level * 1.2);
+        return {inner, outer};
     }
 
     connectSpirals() {
@@ -145,7 +154,7 @@ export class Multimap {
     }
 
     assignBedrooms(actors: Actor[]) {
-        let shuffledRoomsAround = RNG.shuffle([... this.roomsAround]);
+        let shuffledRoomsAround = RNG.shuffle([...this.roomsAround]);
         for (let roomsAround of shuffledRoomsAround) {
             roomsAround.assignBedrooms(actors);
         }
