@@ -3,8 +3,8 @@ import {Glyph} from "./glyph";
 import {RNG} from "rot-js";
 
 const chars = ["#", "#", '#', '/', " ", "\\", "(", ")"];
-const colors = ["#395562", "#3e5b69", "#254352", "#425f6e",
-    "#395e6c", "#254c59", "#324c50", "#073e46"]
+const colors = ["#2d3c4f", "#294146", "#254352", "#284241",
+    "#203f3f", "#254c59", "#324c50", "#073e46"]
 
 export class Background {
 
