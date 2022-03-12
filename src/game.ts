@@ -24,6 +24,7 @@ import {SendingsSpawnHelper} from "./actor/helpers/sendings_spawn_helper";
 import {basicColor} from "./tile/bookshelf";
 import {PlayerSpawnHelper} from "./actor/helpers/player_spawn_helper";
 import {KirrithPrimitive} from "./actor/kirrith_primitive";
+import {Background} from "./background";
 
 export class Game {
     private display: Display;
@@ -42,6 +43,7 @@ export class Game {
     private statusLinePosition: Point;
     private actionLogPosition: Point;
     private gameState: GameState;
+    private background: Background;
 
     private foregroundColor = "white";
     private backgroundColor = "black";
@@ -60,6 +62,7 @@ export class Game {
         this.statusLinePosition = new Point(0, this.gameSize.height - this.textLines - 1);
         this.actionLogPosition = new Point(0, this.gameSize.height - this.textLines);
 
+        this.background = new Background();
         this.display = new Display({
             width: this.gameSize.width,
             height: this.gameSize.height,
@@ -223,6 +226,12 @@ export class Game {
 
         // somewhat confusing view of neighbour levels
         const levelsToShow = this.getLevelsToShow();
+        for (let i = this.displaySizing.topLeft.x; i < this.displaySizing.bottomRight.x; i++) {
+            for (let j = this.displaySizing.topLeft.y; j < this.displaySizing.bottomRight.y; j++) {
+                this.draw(new Point(i, j), this.background.getGlyph(this.player.position.level, 0, i, j));
+            }
+        }
+
         for (let level of levelsToShow) {
             let levelMap = this.multimap.getMap(level);
             if (levelMap != null) {
