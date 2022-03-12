@@ -1,6 +1,5 @@
 export class GameState {
-    foundPineapple: boolean;
-    pineappleWasDestroyed: boolean;
+    backToBed: boolean;
     playerWasCaught: boolean;
 
     constructor() {
@@ -8,20 +7,19 @@ export class GameState {
     }
 
     reset(): void {
-        this.foundPineapple = false;
-        this.pineappleWasDestroyed = false;
+        this.backToBed = false;
         this.playerWasCaught = false;
     }
 
     doStartNextRound(): boolean {
-        return this.foundPineapple;
+        return this.backToBed;
     }
 
     doRestartGame(): boolean {
-        return this.pineappleWasDestroyed || this.playerWasCaught;
+        return this.playerWasCaught;
     }
 
     isGameOver(): boolean {
-        return this.foundPineapple || this.pineappleWasDestroyed || this.playerWasCaught;
+        return this.backToBed || this.playerWasCaught;
     }
 }

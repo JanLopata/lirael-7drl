@@ -47,6 +47,7 @@ export class Game {
     private foregroundColor = "white";
     private backgroundColor = "black";
     private maximumTurns = 360;
+    private readonly successfulNumberOfBooks = 30;
     public readonly warper: Warper;
 
     constructor() {
@@ -128,6 +129,24 @@ export class Game {
         return this.player.position;
     }
 
+    endTheGameReachingBed() {
+        this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
+        const books = this.statusLine.booksFound;
+        const bookNumberColor = "#aaffbb";
+        if (books >= this.successfulNumberOfBooks) {
+            this.messageLog.appendText(`Congratulation! There will be definitely a clue about the %c{#d6dbff}Sightc%{} in those books!`);
+        } else if (books >= this.successfulNumberOfBooks * 0.85) {
+            this.messageLog.appendText(`Good work! It will probably help you ${this.player.getName()}'s next adventures.`);
+        } else {
+            const bookRef = books > 1? "those books": "this book";
+            this.messageLog.appendText(`Yikes! There is only description of horrible monsters in ${bookRef}!`);
+        }
+        const bookRef = books > 1? "books": "book";
+        this.messageLog.appendText(`You have reached safety of your bed with %c{${bookNumberColor}}${books} ${bookRef}%c{} to study.`);
+        this.gameState.backToBed = true;
+
+    }
+
     checkBox(level:number, x: number, y: number): void {
         switch (this.multimap.getTileType(level, x, y)) {
             case Tile.box.type:
@@ -136,7 +155,7 @@ export class Game {
                 if (this.pineapplePoint.x == x && this.pineapplePoint.y == y) {
                     this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
                     this.messageLog.appendText("Hooray! You found a pineapple.");
-                    this.gameState.foundPineapple = true;
+                    this.gameState.backToBed = true;
                 } else {
                     this.messageLog.appendText("This box is empty.");
                 }
@@ -216,7 +235,7 @@ export class Game {
             if (actor.type === ActorType.Player) {
                 this.statusLine.turns += 1;
             }
-            if (this.gameState.foundPineapple) {
+            if (this.gameState.backToBed) {
                 this.statusLine.night += 1;
             }
 

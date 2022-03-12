@@ -41,7 +41,6 @@ export class Bed extends Tile {
             }
 
             if (actor.getName() == this.room.occupant.getName()) {
-                game.addLogMessage(`You go back to bed`);
 
                 if (game.statusLine.turns * 2 < game.statusLine.turnsMax) {
                     game.addLogMessage(`It is too early to go back to sleep, explore some more!`);
@@ -53,7 +52,7 @@ export class Bed extends Tile {
                     return true;
                 }
 
-                // TODO: end game phase
+                game.endTheGameReachingBed();
                 return true;
             }
 
