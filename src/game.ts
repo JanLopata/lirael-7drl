@@ -26,6 +26,8 @@ import {PlayerSpawnHelper} from "./actor/helpers/player_spawn_helper";
 import {KirrithPrimitive} from "./actor/kirrith_primitive";
 import {Background} from "./background";
 
+type LevelsToShow = {left: number, right: number};
+
 export class Game {
     private display: Display;
     private scheduler: Simple;
@@ -233,7 +235,8 @@ export class Game {
             }
         }
 
-        for (let level of levelsToShow) {
+        let {left, right} = levelsToShow;
+        for (let level of [left, right]) {
             let levelMap = this.multimap.getMap(level);
             if (levelMap != null) {
                 levelMap.draw(this.player.position.toPoint(), this.displaySizing);
@@ -248,35 +251,41 @@ export class Game {
                 console.warn(enemy.getName() + "did not spawned!");
                 continue;
             }
-            if (levelsToShow.indexOf(enemy.position.level) >= 0) {
+            if ([left, right].indexOf(enemy.position.level) >= 0) {
                 this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, enemy.position.toPoint(), enemy.glyph);
             }
         }
     }
 
-    private getLevelsToShow() {
-        const result = [];
-        if (this.player.position.x == 0) {
-            if (this.player.position.y < 0) {
-                result.push(this.player.position.level + 1)
+    private getLevelsToShow(): LevelsToShow {
+        const result: LevelsToShow = { left: -10, right:-10};
+
+        if (this.player.position.y == 0) {
+            if (this.player.position.x > 0) {
+                result.right = this.player.position.level;
             } else {
-                result.push(this.player.position.level - 1)
+                result.left = this.player.position.level;
             }
-            result.push(this.player.position.level);
             return result;
         }
 
-        if (this.player.position.y == 0) {
-           return [this.player.position.level];
-        }
-
-        if (this.player.position.x * this.player.position.y < 0) {
-            result.push(this.player.position.level + 1)
+        if (this.player.position.x >= 0) {
+            if (this.player.position.y < 0) {
+                result.left = this.player.position.level + 1;
+            } else {
+                result.left = this.player.position.level - 1;
+            }
+            result.right = this.player.position.level;
+            return result;
         } else {
-            result.push(this.player.position.level - 1)
+            if (this.player.position.y > 0) {
+                result.right = this.player.position.level + 1;
+            } else {
+                result.right = this.player.position.level - 1;
+            }
+            result.left = this.player.position.level;
+            return result;
         }
-        result.push(this.player.position.level);
-        return result;
 
     }
 
