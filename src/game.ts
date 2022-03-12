@@ -21,7 +21,7 @@ import {Clair} from "./actor/clair";
 import {RoomProperties} from "./room/room_property";
 import {ClairSpawnHelper} from "./actor/helpers/clair_spawn_helper";
 import {SendingsSpawnHelper} from "./actor/helpers/sendings_spawn_helper";
-import {Bookshelf} from "./tile/bookshelf";
+import {basicColor} from "./tile/bookshelf";
 import {PlayerSpawnHelper} from "./actor/helpers/player_spawn_helper";
 import {KirrithPrimitive} from "./actor/kirrith_primitive";
 
@@ -177,12 +177,9 @@ export class Game {
         this.display.clear();
 
         this.messageLog.clear();
-        if (!this.gameState.isGameOver() || this.gameState.doRestartGame()) {
-            this.resetStatusLine();
-            this.writeHelpMessage();
-        } else {
-            this.statusLine.turns = 0;
-        }
+        this.resetStatusLine();
+        this.writeHelpMessage();
+
         this.gameState.reset();
 
         this.multimap.generateMultimap(this.mapSize.width, this.mapSize.height);
@@ -281,11 +278,10 @@ export class Game {
     private writeHelpMessage(): void {
 
         let dummyClair = new Clair(this, new Point3D(0, 0, 0), "Dummy", 0);
-        let bookshelf = new Bookshelf(false);
 
         let helpMessage = [
-            `Find some interesting books in library %c{${bookshelf.glyph.foregroundColor}}bookshelves%c{}.`,
-            `Move with numpad, search %c{${bookshelf.glyph.foregroundColor}}bookshelves%c{} by walking into them'.`,
+            `Find some interesting books in library %c{${basicColor}}bookshelves%c{}.`,
+            `Move with numpad, search %c{${basicColor}}bookshelves%c{} by walking into them'.`,
             `Interact with doors with CTRL, SHIFT, ALT or META + numpad`,
             `Watch out for %c{${dummyClair.glyph.foregroundColor}}Clairs%c{} in %c{${dangerColor}}restricted areas%c{}!`
         ];
