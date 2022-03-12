@@ -5,9 +5,9 @@ import { Point } from "../point";
 import { Glyph } from "../glyph";
 import { InputUtility } from "../input-utility";
 import {Point3D} from "../point3d";
-import {KirrithPrimitive} from "./kirrithPrimitive";
 import {Clair} from "./clair";
 import {Sending} from "./sending";
+import {KirrithPrimitive} from "./kirrith_primitive";
 
 export class Player implements Actor {
     glyph: Glyph;

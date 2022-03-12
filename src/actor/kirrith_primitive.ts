@@ -26,6 +26,10 @@ export class KirrithPrimitive implements Actor {
         let astar = new Path.AStar(target.x, target.y, this.game.onLevelNavigable(this.position.level, 1), {topology: 8});
 
         this.path = [];
+        if (this.game.statusLine.turns == this.game.statusLine.turnsMax) {
+            // warn the player
+            this.game.addLogMessage(`You should go to your bed, %c{${this.glyph.foregroundColor}}${this.getName()}%c{} must not catch you!`);
+        }
         if (this.game.statusLine.turns >= this.game.statusLine.turnsMax) {
             // activate Kirrith when time's up
             astar.compute(this.position.x, this.position.y, this.pathCallback.bind(this));

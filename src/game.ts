@@ -23,7 +23,7 @@ import {ClairSpawnHelper} from "./actor/helpers/clair_spawn_helper";
 import {SendingsSpawnHelper} from "./actor/helpers/sendings_spawn_helper";
 import {Bookshelf} from "./tile/bookshelf";
 import {PlayerSpawnHelper} from "./actor/helpers/player_spawn_helper";
-import {KirrithPrimitive} from "./actor/kirrithPrimitive";
+import {KirrithPrimitive} from "./actor/kirrith_primitive";
 
 export class Game {
     private display: Display;
