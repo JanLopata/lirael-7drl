@@ -6,7 +6,7 @@ import {Point} from "./point";
 import {Door} from "./tile/door";
 import {RoomTile} from "./tile/room_tile";
 import {RoomProperties} from "./room/room_property";
-import {RoomDecorator, RoomType} from "./room/room_decorator";
+import {RoomType} from "./room/room_decorator";
 import {Actor} from "./actor/actor";
 import {Player} from "./actor/player";
 
@@ -25,16 +25,14 @@ export class RoomsAround {
     private readonly width: number;
     private readonly height: number;
     private readonly shift: Point;
-    private readonly decorator: RoomDecorator;
     private digger: Digger;
 
-    constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number, decorator: RoomDecorator) {
+    constructor(level: number, spiralPart: SpiralPart, outsideDiameter: number) {
         this.level = level;
         this.spiralPart = spiralPart;
         this.doorsList = [];
         this.roomsWithProperty = [];
         this.generatedTiles = {};
-        this.decorator = decorator;
         if (roomDebug) {
             this.width = 20;
             this.height = 20;
@@ -91,9 +89,10 @@ export class RoomsAround {
             }
         }
 
-        for (let room of this.roomsWithProperty) {
-            this.decorator.decorate(room, map);
-        }
+    }
+
+    public getRooms(): RoomProperties[] {
+        return [...this.roomsWithProperty];
     }
 
     assignBedrooms(actorList: Actor[]) {

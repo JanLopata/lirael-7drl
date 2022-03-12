@@ -9,6 +9,7 @@ import {WarpTile} from "./tile/warptile";
 import {RoomsAround} from "./rooms_around";
 import {RoomDecorator} from "./room/room_decorator";
 import {Actor} from "./actor/actor";
+import {RoomProperties} from "./room/room_property";
 
 export class Multimap {
     private multimap: { [level: number]: Map }
@@ -32,7 +33,21 @@ export class Multimap {
         for (let i = 0; i < 7; i++) {
             this.generateLevel(i);
         }
+        this.decorateRooms();
         this.connectSpirals();
+    }
+
+    private decorateRooms() {
+        const allRooms: RoomProperties[] = [];
+        for (let roomsAround of this.roomsAround) {
+            for (let room of roomsAround.getRooms()) {
+                allRooms.push(room);
+            }
+        }
+        RNG.shuffle(allRooms);
+        for (let room of allRooms) {
+            this.roomDecorator.decorate(room, this.getMap(room.level));
+        }
     }
 
     generateLevel(level: number) {
@@ -43,7 +58,7 @@ export class Multimap {
         spiralPart.imprintToMap(this.getMap(level));
         this.spirals.push(spiralPart);
 
-        const roomsAround = new RoomsAround(level, spiralPart, 15, this.roomDecorator);
+        const roomsAround = new RoomsAround(level, spiralPart, 15);
         roomsAround.imprintToMap(this.getMap(level));
         this.roomsAround.push(roomsAround);
     }
@@ -52,10 +67,6 @@ export class Multimap {
         for (let spiral of this.spirals) {
             spiral.connect(this);
         }
-    }
-
-    setTile(level: number, x: number, y: number, tile: Tile): void {
-        this.multimap[level].setTile(x, y, tile);
     }
 
     getRandomTilePositions(type: TileType, quantity: number = 1): Point3D[] {
