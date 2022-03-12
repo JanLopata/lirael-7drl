@@ -160,8 +160,9 @@ export class Game {
         this.messageLog.appendText("Try again with 'spacebar' or 'return'.");
         this.messageLog.appendText("...");
         this.messageLog.appendText(`%c{#f00}Game over%c{} - you were captured by ${actor.getName()}!`);
+        const kirrithText = actor instanceof KirrithPrimitive? ` You should be in your bed!`: "";
         this.messageLog.appendText(
-            `%c{${actor.glyph.foregroundColor}}${actor.getName()}:%c{} what are you doing here, ${this.player.getName()}?`);
+            `%c{${actor.glyph.foregroundColor}}${actor.getName()}:%c{} what are you doing here, ${this.player.getName()}?${kirrithText}`);
         this.gameState.playerWasCaught = true;
     }
 
