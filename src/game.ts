@@ -131,18 +131,19 @@ export class Game {
 
     endTheGameReachingBed() {
         this.messageLog.appendText("Try again with 'spacebar' or 'return'.");
+        this.messageLog.appendText("...");
         const books = this.statusLine.booksFound;
         const bookNumberColor = "#aaffbb";
         if (books >= this.successfulNumberOfBooks) {
             this.messageLog.appendText(`Congratulation! There will be definitely a clue about the %c{#d6dbff}Sightc%{} in those books!`);
         } else if (books >= this.successfulNumberOfBooks * 0.85) {
-            this.messageLog.appendText(`Good work! It will probably help you ${this.player.getName()}'s next adventures.`);
+            this.messageLog.appendText(`Good work! It will probably help in ${this.player.getName()}'s next adventures.`);
         } else {
             const bookRef = books > 1? "those books": "this book";
             this.messageLog.appendText(`Yikes! There is only description of horrible monsters in ${bookRef}!`);
         }
-        const bookRef = books > 1? "books": "book";
-        this.messageLog.appendText(`You have reached safety of your bed with %c{${bookNumberColor}}${books} ${bookRef}%c{} to study.`);
+        const bookPlural = books > 1? "books": "book";
+        this.messageLog.appendText(`You have reached safety of your bed with %c{${bookNumberColor}}${books} ${bookPlural}%c{} to study.`);
         this.gameState.backToBed = true;
 
     }
@@ -157,8 +158,11 @@ export class Game {
     }
 
     catchPlayer(actor: Actor): void {
-        this.messageLog.appendText("Continue with 'spacebar' or 'return'.");
-        this.messageLog.appendText(`Game over - you were captured by ${actor.getName()}!`);
+        this.messageLog.appendText("Try again with 'spacebar' or 'return'.");
+        this.messageLog.appendText("...");
+        this.messageLog.appendText(`%c{#f00}Game over%c{} - you were captured by ${actor.getName()}!`);
+        this.messageLog.appendText(
+            `%c{${actor.glyph.foregroundColor}}${actor.getName()}:%c{} what are you doing here, ${this.player.getName()}?`);
         this.gameState.playerWasCaught = true;
     }
 
