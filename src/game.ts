@@ -228,7 +228,8 @@ export class Game {
         const levelsToShow = this.getLevelsToShow();
         for (let i = this.displaySizing.topLeft.x; i < this.displaySizing.bottomRight.x; i++) {
             for (let j = this.displaySizing.topLeft.y; j < this.displaySizing.bottomRight.y; j++) {
-                this.draw(new Point(i, j), this.background.getGlyph(this.player.position.level, 0, i, j));
+                this.draw(new Point(i, j), this.background.getGlyph(
+                    this.player.position.level, i + this.player.position.x, j + this.player.position.y));
             }
         }
 

@@ -3,12 +3,14 @@ import {Glyph} from "./glyph";
 import {RNG} from "rot-js";
 
 const chars = ["#", "#", '#', '/', " ", "\\", "(", ")"];
+const colors = ["#395562", "#3e5b69", "#254352", "#425f6e",
+    "#395e6c", "#254c59", "#324c50", "#073e46"]
 
 export class Background {
 
     noiseMap: { [key: string]: Simplex };
-    glyphMap: { [key: string]: Glyph}
-    backgroundMap: {[key: string]: string}
+    glyphMap: { [key: string]: Glyph }
+    backgroundMap: { [key: string]: string }
 
     constructor() {
         this.noiseMap = {};
@@ -18,27 +20,27 @@ export class Background {
 
     getOrCreateGlyph(key: string) {
         if (this.glyphMap[key] == null) {
-            this.glyphMap[key] = new Glyph(RNG.getItem(chars));
+            this.glyphMap[key] = new Glyph(RNG.getItem(chars), RNG.getItem(colors));
         }
         return this.glyphMap[key];
     }
 
-    getGlyph(level1: number, level2: number, x: number, y: number): Glyph {
+    getGlyph(level: number, x: number, y: number): Glyph {
 
-        let backgroundMapKey = this.toXYKey(level1, level2, x, y);
+        let backgroundMapKey = this.toXYKey(level, x, y);
 
         if (this.backgroundMap[backgroundMapKey] == null) {
 
-            let noise = this.getNoise(level1, level2, x, y);
+            let noise = this.getNoise(level, x, y);
             this.backgroundMap[backgroundMapKey] = "" + noise;
         }
 
         return this.getOrCreateGlyph(this.backgroundMap[backgroundMapKey]);
     }
 
-    getNoise(level1: number, level2: number, x: number, y: number): number {
+    getNoise(level1: number, x: number, y: number): number {
 
-        let key = this.toKey(level1, level2);
+        let key = this.toKey(level1);
         if (this.noiseMap[key] == null) {
             this.noiseMap[key] = new Simplex();
         }
@@ -47,12 +49,12 @@ export class Background {
     }
 
 
-    private toKey(level1: number, level2: number) {
-        return level1 + "," + level2;
+    private toKey(level: number) {
+        return "" + level;
     }
 
-    private toXYKey(level1: number, level2: number, x: number, y: number): string {
-        return level1 + ";" + level2 + ";" + x + ";" + y;
+    private toXYKey(level: number, x: number, y: number): string {
+        return level + ";" + x + ";" + y;
     }
 
 
