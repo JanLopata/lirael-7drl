@@ -82,7 +82,6 @@ export class RoomDecorator {
 
         const newAmount = this.roomTypeCount[type] == null ? 1 : this.roomTypeCount[type] + 1;
         const limit = this.roomTypeLimit[type];
-        console.log(`Trying to assign room type ${type}, newAmount=${newAmount}, limit=${limit}`)
         if (limit != null && newAmount > limit) {
             return false;
         }
