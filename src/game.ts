@@ -50,7 +50,7 @@ export class Game {
     private foregroundColor = "white";
     private backgroundColor = "black";
     private maximumTurns = 360;
-    private readonly successfulNumberOfBooks = 30;
+    private readonly successfulNumberOfBooks = 20;
     public readonly warper: Warper;
 
     constructor() {
