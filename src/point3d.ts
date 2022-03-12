@@ -3,8 +3,11 @@ import {Point} from "./point";
 export class Point3D {
     constructor(public level: number, public x: number, public y: number) { }
 
-    equals(point: Point3D): boolean {
-        return this.level == point.level && this.x == point.x && this.y == point.y;
+    equals(another: Point3D): boolean {
+        if (another == null) {
+            return false;
+        }
+        return this.level == another.level && this.x == another.x && this.y == another.y;
     }
 
     toKey(): string {

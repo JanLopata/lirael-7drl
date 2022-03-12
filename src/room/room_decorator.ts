@@ -4,6 +4,9 @@ import {LibraryDecorator} from "./library_decorator";
 import {BedroomDecorator} from "./bedroom_decorator";
 import {DiningRoomDecorator} from "./dining_room_decorator";
 import {RNG} from "rot-js";
+import {SnakeHelper} from "./snake_helper";
+import {Point} from "../point";
+import {TileType} from "../tile/tile";
 
 
 export enum RoomType {
@@ -21,7 +24,7 @@ export class RoomDecorator {
     public decorate(room: RoomProperties, map: Map) {
 
         if (room.type == RoomType.NONE) {
-            this.chooseAndAssignType(room);
+            this.chooseAndAssignType(room, map);
         }
         if (room.type != RoomType.NONE) {
             this.decorateByType(map, room);
@@ -50,12 +53,12 @@ export class RoomDecorator {
 
     }
 
-    private chooseAndAssignType(room: RoomProperties): boolean {
+    private chooseAndAssignType(room: RoomProperties, map: Map): boolean {
 
-        if (room.squaredSize < 15) {
-            if (this.assignType(room, RoomType.BEDROOM) ) {
+        if (room.squaredSize < 15 && RoomDecorator.isSuitableForBedroom(room, map)) {
+            if (this.assignType(room, RoomType.BEDROOM)) {
                 room.danger = true;
-                room.typicalRoomTile.refreshDangerColor();
+                room.typicalRoomTile.refreshTilesAfterRoomPropsChange();
                 return true;
             }
             return false;
@@ -67,7 +70,7 @@ export class RoomDecorator {
 
         if (this.assignType(room, RoomType.LIBRARY)) {
             room.danger = RNG.getUniform() > 0.6;
-            room.typicalRoomTile.refreshDangerColor();
+            room.typicalRoomTile.refreshTilesAfterRoomPropsChange();
             return true;
         }
         return false;
@@ -88,5 +91,20 @@ export class RoomDecorator {
         return true;
     }
 
+    private static isSuitableForBedroom(room: RoomProperties, map: Map) {
+
+        let roomSurroundings = SnakeHelper.getSnake(room.lt.plus(new Point(-1, -1)), room.rd.plus(new Point(1, 1)));
+        for (let point of roomSurroundings) {
+            let tile = map.getTile(point.x, point.y);
+            if (tile == null)
+                continue;
+            if (tile.type == TileType.Floor) {
+                console.log(`room ${room.lt} - ${room.rd} not suitable for bedroom`)
+                return false;
+            }
+        }
+        return true;
+
+    }
 
 }

@@ -22,6 +22,9 @@ export class Warper {
 
     findTargetThroughWarps(actor: Actor, target: Point3D): Point3D {
 
+        if (actor.position == null)
+            return null;
+
         if (actor.position.level == target.level) {
             return target;
         }

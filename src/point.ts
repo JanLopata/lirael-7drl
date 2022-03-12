@@ -25,6 +25,10 @@ export class Point {
         return this.minus(another).norm4();
     }
 
+    scale(factor: number) {
+        return new Point(Math.round(this.x * factor), Math.round(this.y * factor));
+    }
+
     norm4(): number {
         return Math.abs(this.x) + Math.abs(this.y);
     }

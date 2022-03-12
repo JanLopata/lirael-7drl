@@ -118,7 +118,7 @@ export class Game {
 
     getNpcOn(point: Point3D): Actor {
         for (let npc of this.npcList) {
-            if (npc.position.equals(point)) {
+            if (point.equals(npc.position)) {
                 return npc;
             }
         }
@@ -266,6 +266,10 @@ export class Game {
         this.messageLog.draw();
         this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, this.player.position.toPoint(), this.player.glyph);
         for (let enemy of this.npcList) {
+            if (enemy.position == null) {
+                console.warn(enemy.getName() + "did not spawned!");
+                continue;
+            }
             if (levelsToShow.indexOf(enemy.position.level) >= 0) {
                 this.drawWithCheck(this.player.position.toPoint(), this.displaySizing, enemy.position.toPoint(), enemy.glyph);
             }
@@ -349,10 +353,12 @@ export class Game {
     }
 
     private spawnKirrith() {
-        let kirrith = new KirrithPrimitive(this, null);
+        const fallbackPosition = this.getRandomTilePositions(TileType.Floor)[0];
+        let kirrith = new KirrithPrimitive(this, fallbackPosition);
         this.multimap.assignBedrooms([kirrith]);
-        kirrith.position = this.getRandomTarget(
+        const roomPosition = this.getRandomTarget(
             tile => (tile instanceof RoomTile) && tile.roomProps.occupant == kirrith);
+        kirrith.position = roomPosition != null ? roomPosition : kirrith.position;
         this.npcList.push(kirrith);
     }
 
