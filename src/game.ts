@@ -138,7 +138,7 @@ export class Game {
         this.messageLog.appendText("...");
         const books = this.statusLine.booksFound;
         if (books >= this.successfulNumberOfBooks) {
-            this.messageLog.appendText(`Congratulation! There will be definitely a clue about the %c{#d6dbff}Sightc%{} in those books!`);
+            this.messageLog.appendText(`Congratulation! There will be a clue about the %c{#d6dbff}}Sightc%{} in those books!`);
         } else if (books >= this.successfulNumberOfBooks * 0.85) {
             this.messageLog.appendText(`Good work! It will probably help in ${this.player.getName()}'s next adventures.`);
         } else {

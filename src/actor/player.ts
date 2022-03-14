@@ -1,9 +1,9 @@
-import { KEYS, DIRS } from "rot-js";
-import { Game } from "../game";
-import { Actor, ActorType } from "./actor";
-import { Point } from "../point";
-import { Glyph } from "../glyph";
-import { InputUtility } from "../input-utility";
+import {DIRS, KEYS} from "rot-js";
+import {Game} from "../game";
+import {Actor, ActorType} from "./actor";
+import {Point} from "../point";
+import {Glyph} from "../glyph";
+import {InputUtility} from "../input-utility";
 import {Point3D} from "../point3d";
 import {Clair} from "./clair";
 import {Sending} from "./sending";
@@ -20,13 +20,21 @@ export class Player implements Actor {
 
         this.keyMap = {};
         this.keyMap[KEYS.VK_NUMPAD8] = 0; // up
+        this.keyMap[KEYS.VK_UP] = 0;
         this.keyMap[KEYS.VK_NUMPAD9] = 1;
+        this.keyMap[KEYS.VK_PAGE_UP] = 1;
         this.keyMap[KEYS.VK_NUMPAD6] = 2; // right
+        this.keyMap[KEYS.VK_RIGHT] = 2;
         this.keyMap[KEYS.VK_NUMPAD3] = 3;
+        this.keyMap[KEYS.VK_PAGE_DOWN] = 3;
         this.keyMap[KEYS.VK_NUMPAD2] = 4; // down
+        this.keyMap[KEYS.VK_DOWN] = 4;
         this.keyMap[KEYS.VK_NUMPAD1] = 5;
+        this.keyMap[KEYS.VK_END] = 5;
         this.keyMap[KEYS.VK_NUMPAD4] = 6; // left
+        this.keyMap[KEYS.VK_LEFT] = 6;
         this.keyMap[KEYS.VK_NUMPAD7] = 7;
+        this.keyMap[KEYS.VK_HOME] = 7;
     }
 
     act(): Promise<any> {
@@ -58,7 +66,7 @@ export class Player implements Actor {
 
             validInput = true;
         } else {
-            validInput = code === KEYS.VK_NUMPAD5; // Wait a turn
+            validInput = (code === KEYS.VK_NUMPAD5) || (code === KEYS.VK_SPACE); // Wait a turn
         }
         return validInput;
     }
